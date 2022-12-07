@@ -1,12 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+library work;
+use work.surfer_pkg.all;
 
 entity gen_info is
     port (
         clk, rst : in std_logic;
         
-        info : out std_logic_vector(13 downto 0)
+        info : out bomb_info
     );
 end entity;
 architecture structural of gen_info is
