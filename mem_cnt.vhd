@@ -8,9 +8,9 @@ entity mem_cnt is
     port (
         clk         : in std_logic;
         add, delete : in std_logic;
+        copy, move  : in std_logic;
         info        : in bomb_info;
         
-        burst       : in std_logic;
         core_r_data : in mem_data;
         
         core_w_en   : out std_logic;
@@ -54,31 +54,49 @@ begin
     SET_BURST: process(clk) is
     begin
         if rising_edge(clk) then
-            if burst='1' then
+            if copy='1' or move='1' then
                 burst_state <= '1';
                 burst_count <= 0;
-                disp_w_en <= '1';
             elsif burst_count >= queue_size then
                 burst_state <= '0';
                 disp_w_en <= '0';
+            else
+                burst_count <= burst_count + 1;
+            end if;
+            if copy='1' then
+                disp_w_en <= '1';
             end if;
         end if;
     end process;
     
-    READ_DATA: process(clk) is
+    READ_ADDR: process(clk) is
+    begin
+        if rising_edge(clk) then
+            if burst_state='1' then
+                core_r_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
+            else
+                core_r_addr <= std_logic_vector(to_unsigned(queue_head, mem_addr'length));
+            end if;
+        end if;
+    end process;
+    
+    WRITE_DISP: process(clk) is
+    begin
+        if rising_edge(clk) then
+            if burst_state='1' then
+                disp_w_addr <= std_logic_vector(to_unsigned(burst_count, mem_addr'length));
+                disp_w_data <= core_r_data;
+            end if;
+        end if;
+    end process;
+    
+    SET_FIRST: process(clk) is
     begin
         if rising_edge(clk) then
             if add='1' and queue_size=0 then
                 first <= info;
-            elsif burst='0' then
-                core_r_addr <= std_logic_vector(to_unsigned(queue_head + 1, mem_addr'length));
+            else
                 first <= core_r_data(13 downto 0);
-            end if;
-            if burst='1' then
-                disp_w_addr <= std_logic_vector(to_unsigned(burst_count));
-                disp_w_data <= core_r_data;
-                burst_count <= burst_count + 1;
-                -- figure out how and when to set disp_w_en and core_r_addr in burst mode
             end if;
         end if;
     end process;
