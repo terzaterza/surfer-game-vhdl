@@ -120,6 +120,10 @@ BEGIN
 	copy <= '1';
 	wait for CLK_P;
 	copy <= '0';
+	wait for 10 * CLK_P;
+	move <= '1';
+	wait for CLK_P;
+	move <= '0';
 WAIT;                                                        
 END PROCESS always;
 

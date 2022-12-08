@@ -116,8 +116,11 @@ begin
     SET_FIRST: process(clk) is
     begin
         if rising_edge(clk) then
-            if add='1' and queue_size=0 then first <= info;
-            else first <= core_r_data(13 downto 0); end if;
+            if add='1' and queue_size=0 then
+                first <= info;
+            elsif burst_state='0' then
+                first <= core_r_data(13 downto 0);
+            end if;
         end if;
     end process;
     
