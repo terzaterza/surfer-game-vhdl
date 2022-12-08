@@ -41,13 +41,15 @@ begin
             queue_size <= 0;
             queue_head <= 0;
         elsif rising_edge(clk) then
-            if add='1' and burst_state='0' then
-                -- core_w signals controlled in WRITE_CORE
-                queue_size <= queue_size + 1;
-            elsif delete='1' then
-                -- assert size > 0
-                queue_size <= queue_size - 1;
-                queue_head <= (queue_head + 1) mod q_size_range'high; -- mod only needed for simulation
+            if burst_state='0' then
+                if add='1' then
+                    -- core_w signals controlled in WRITE_CORE
+                    queue_size <= queue_size + 1;
+                elsif delete='1' then
+                    -- assert size > 0
+                    queue_size <= queue_size - 1;
+                    queue_head <= (queue_head + 1) mod q_size_range'high; -- mod only needed for simulation
+                end if;
             end if;
         end if;
     end process;
@@ -57,39 +59,34 @@ begin
         if rst='1' then
             burst_state <= '0';
         elsif rising_edge(clk) then
-            if copy='1' or move='1' then
+            if (copy='1' or move='1') and queue_size > 0 then
                 burst_state <= '1';
                 burst_count <= 0;
                 if move='1' then burst_mode <= '1';
                 else burst_mode <= '0'; end if;
-            elsif burst_count >= queue_size then
+            elsif burst_count >= queue_size-1 then
                 burst_state <= '0';
-            else
+            elsif burst_state='1' then
                 burst_count <= burst_count + 1;
             end if;
         end if;
     end process;
     
-    READ_ADDR: process(clk) is
+    READ_CORE: process(queue_head, burst_count, burst_state) is -- comb process
     begin
-        if rising_edge(clk) then
-            if burst_state='1' then
-                core_r_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
-            else
-                core_r_addr <= std_logic_vector(to_unsigned(queue_head, mem_addr'length));
-            end if;
+        if burst_state='1' then
+            core_r_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
+        else
+            core_r_addr <= std_logic_vector(to_unsigned(queue_head, mem_addr'length));
         end if;
     end process;
     
     WRITE_DISP: process(clk) is
     begin
         if rising_edge(clk) then
-            if copy='1' then
+            disp_w_en <= '0';
+            if burst_state='1' and burst_mode='0' then
                 disp_w_en <= '1';
-            elsif burst_state='0' then
-                disp_w_en <= '0';
-            end if;
-            if burst_state='1' then
                 disp_w_addr <= std_logic_vector(to_unsigned(burst_count, mem_addr'length));
                 disp_w_data <= core_r_data;
             end if;
