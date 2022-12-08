@@ -6,10 +6,11 @@ use work.surfer_pkg.all;
 
 entity mem_cnt is
     port (
-        clk         : in std_logic;
+        clk, rst    : in std_logic;
         add, delete : in std_logic;
         copy, move  : in std_logic;
         info        : in bomb_info;
+        speed       : in speed_range;
         
         core_r_data : in mem_data;
         
@@ -31,18 +32,18 @@ architecture behavioral of mem_cnt is
     signal queue_size : q_size_range;
     
     signal burst_state : std_logic;
+    signal burst_mode  : std_logic; -- 0 for copy, 1 for move
     signal burst_count : q_size_range;
 begin
-    ADD_DELETE: process(clk) is
+    ADD_DELETE: process(clk, rst) is
     begin
-        -- add reset for queue_size (and whatever else)
-        if rising_edge(clk) then
-            core_w_en <= '0';
-            if add='1' then
+        if rst='1' then
+            queue_size <= 0;
+            queue_head <= 0;
+        elsif rising_edge(clk) then
+            if add='1' and burst_state='0' then
+                -- core_w signals controlled in WRITE_CORE
                 queue_size <= queue_size + 1;
-                core_w_addr <= std_logic_vector(to_unsigned(queue_head + queue_size, mem_addr'length));
-                core_w_data <= "00" & info;
-                core_w_en <= '1';
             elsif delete='1' then
                 -- assert size > 0
                 queue_size <= queue_size - 1;
@@ -51,20 +52,20 @@ begin
         end if;
     end process;
     
-    SET_BURST: process(clk) is
+    SET_BURST: process(clk, rst) is
     begin
-        if rising_edge(clk) then
+        if rst='1' then
+            burst_state <= '0';
+        elsif rising_edge(clk) then
             if copy='1' or move='1' then
                 burst_state <= '1';
                 burst_count <= 0;
+                if move='1' then burst_mode <= '1';
+                else burst_mode <= '0'; end if;
             elsif burst_count >= queue_size then
                 burst_state <= '0';
-                disp_w_en <= '0';
             else
                 burst_count <= burst_count + 1;
-            end if;
-            if copy='1' then
-                disp_w_en <= '1';
             end if;
         end if;
     end process;
@@ -83,6 +84,11 @@ begin
     WRITE_DISP: process(clk) is
     begin
         if rising_edge(clk) then
+            if copy='1' then
+                disp_w_en <= '1';
+            elsif burst_state='0' then
+                disp_w_en <= '0';
+            end if;
             if burst_state='1' then
                 disp_w_addr <= std_logic_vector(to_unsigned(burst_count, mem_addr'length));
                 disp_w_data <= core_r_data;
@@ -90,14 +96,31 @@ begin
         end if;
     end process;
     
+    WRITE_CORE: process(clk) is
+    variable read_pos : integer;
+    variable new_pos : std_logic_vector(10 downto 0);
+    begin
+        if rising_edge(clk) then
+            core_w_en <= '0';
+            if burst_state='1' and burst_mode='1' then
+                read_pos := to_integer(unsigned(core_r_data(13 downto 3)));
+                new_pos := std_logic_vector(to_unsigned(read_pos - speed, 11));
+                core_w_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
+                core_w_data <= "00" & new_pos & core_r_data(2 downto 0);
+                core_w_en <= '1';
+            elsif add='1' then
+                core_w_addr <= std_logic_vector(to_unsigned(queue_head + queue_size, mem_addr'length));
+                core_w_data <= "00" & info;
+                core_w_en <= '1';
+            end if;
+        end if;
+    end process;
+    
     SET_FIRST: process(clk) is
     begin
         if rising_edge(clk) then
-            if add='1' and queue_size=0 then
-                first <= info;
-            else
-                first <= core_r_data(13 downto 0);
-            end if;
+            if add='1' and queue_size=0 then first <= info;
+            else first <= core_r_data(13 downto 0); end if;
         end if;
     end process;
     
