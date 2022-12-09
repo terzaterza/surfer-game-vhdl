@@ -100,8 +100,8 @@ begin
         if rising_edge(clk) then
             core_w_en <= '0';
             if burst_state='1' and burst_mode='1' then
-                read_pos := to_integer(unsigned(core_r_data(13 downto 3)));
-                new_pos := std_logic_vector(to_unsigned(read_pos - speed, 11));
+                read_pos := to_integer(signed(core_r_data(13 downto 3)));
+                new_pos := std_logic_vector(to_signed(read_pos - speed, 11));
                 core_w_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
                 core_w_data <= "00" & new_pos & core_r_data(2 downto 0);
                 core_w_en <= '1';

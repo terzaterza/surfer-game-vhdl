@@ -10,5 +10,11 @@ package surfer_pkg is
     subtype q_size_range is natural range 0 to 16;
     subtype speed_range is natural range 1 to 10;
     
+    subtype lane_range is natural range 0 to 2;
+    
     type game_states is (coll_check, add_elem, move, inc_speed, burst_cpy);
+    
+    constant surfer_dim : natural := 48;
+    constant object_dim : natural := 36;
+    constant c_indent   : natural := 10;
 end package surfer_pkg;
