@@ -51,7 +51,7 @@ begin
         end if;
     end process;
 
-    process(clk, rst) is
+    process(clk, rst, seed) is
     begin
         if rst='1' then
             acc <= x"00" & seed;

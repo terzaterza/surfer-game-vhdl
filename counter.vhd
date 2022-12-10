@@ -11,8 +11,7 @@ entity counter is
 	);
 	port
 	(
-        clk      : in std_logic;
-        rst      : in std_logic;
+        clk, rst : in std_logic;
         en       : in std_logic;
         count_to : in natural range 0 to max_count; -- from 0 only for simulation init reasons
         

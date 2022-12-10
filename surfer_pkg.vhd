@@ -12,9 +12,13 @@ package surfer_pkg is
     
     subtype lane_range is natural range 0 to 2;
     
-    type game_states is (coll_check, add_elem, move, inc_speed, burst_cpy);
+    type game_states is (coll_check, add_elem, move, inc_speed, wait_ref, burst_cpy);
     
     constant surfer_dim : natural := 48;
     constant object_dim : natural := 36;
     constant c_indent   : natural := 10;
+    
+    constant spawn_count_min       : natural := 30;
+    constant spawn_count_range_len : natural := 90;
+    subtype spawn_count_range is natural range spawn_count_min to spawn_count_min + spawn_count_range_len;
 end package surfer_pkg;
