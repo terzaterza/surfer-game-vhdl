@@ -53,4 +53,6 @@ next_lane_process :  process(clk, rst) is
     D0: debouncer generic map (1000000) port map(clk, rst, up, go_up);
     D1: debouncer generic map (1000000) port map(clk, rst, down, go_down);
     
+    -- not up, down
+    
 end architecture Behavioral;

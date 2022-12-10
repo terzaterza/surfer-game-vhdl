@@ -17,9 +17,9 @@
 -- suit user's needs .Comments are provided in each section to help the user  
 -- fill out necessary details.                                                
 -- ***************************************************************************
--- Generated on "12/10/2022 14:56:47"
+-- Generated on "12/10/2022 15:07:11"
                                                             
--- Vhdl Test Bench template for design  :  gen_info
+-- Vhdl Test Bench template for design  :  surfer
 -- 
 -- Simulation tool : ModelSim-Altera (VHDL)
 -- 
@@ -27,47 +27,47 @@
 LIBRARY ieee;                                               
 USE ieee.std_logic_1164.all;                                
 
-ENTITY gen_info_vhd_tst IS
-END gen_info_vhd_tst;
-ARCHITECTURE gen_info_arch OF gen_info_vhd_tst IS
+ENTITY surfer_vhd_tst IS
+END surfer_vhd_tst;
+ARCHITECTURE surfer_arch OF surfer_vhd_tst IS
 -- constants                                                 
+constant clkp : time := 1 us;
 -- signals                                                   
-SIGNAL clk : STD_LOGIC;
-SIGNAL count_en : STD_LOGIC;
-SIGNAL info : STD_LOGIC_VECTOR(13 DOWNTO 0);
-SIGNAL rst : STD_LOGIC;
-SIGNAL take : STD_LOGIC;
-COMPONENT gen_info
+SIGNAL clk_50MHz : STD_LOGIC := '1';
+SIGNAL digit0 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL digit1 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL down : STD_LOGIC := '0';
+SIGNAL lives_leds : STD_LOGIC_VECTOR(2 DOWNTO 0);
+SIGNAL rst : STD_LOGIC := '1';
+SIGNAL up : STD_LOGIC := '0';
+COMPONENT surfer
 	PORT (
-	clk : IN STD_LOGIC;
-	count_en : IN STD_LOGIC;
-	info : BUFFER STD_LOGIC_VECTOR(13 DOWNTO 0);
+	clk_50MHz : IN STD_LOGIC;
+	digit0 : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+	digit1 : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+	down : IN STD_LOGIC;
+	lives_leds : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
 	rst : IN STD_LOGIC;
-	take : BUFFER STD_LOGIC
+	up : IN STD_LOGIC
 	);
 END COMPONENT;
 BEGIN
-	i1 : gen_info
+	i1 : surfer
 	PORT MAP (
 -- list connections between master ports and signals
-	clk => clk,
-	count_en => count_en,
-	info => info,
+	clk_50MHz => clk_50MHz,
+	digit0 => digit0,
+	digit1 => digit1,
+	down => down,
+	lives_leds => lives_leds,
 	rst => rst,
-	take => take
+	up => up
 	);
-init : PROCESS                                               
--- variable declarations                                     
-BEGIN                                                        
-        -- code that executes only once                      
-WAIT;                                                       
-END PROCESS init;                                           
+clk_50MHz <= not clk_50MHz after clkp / 2;
 always : PROCESS                                              
--- optional sensitivity list                                  
--- (        )                                                 
--- variable declarations                                      
 BEGIN                                                         
-        -- code executes for every event on sensitivity list  
+	wait for clkp;
+	rst <= '0';
 WAIT;                                                        
 END PROCESS always;                                          
-END gen_info_arch;
+END surfer_arch;
