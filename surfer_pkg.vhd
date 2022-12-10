@@ -19,7 +19,7 @@ package surfer_pkg is
     constant c_indent   : natural := 10;
     
     constant spawn_count_min       : natural := 30;
-    constant spawn_count_range_len : natural := 90;
+    constant spawn_count_range_len : natural := 150;
     subtype  spawn_count_range is natural range spawn_count_min to spawn_count_min + spawn_count_range_len;
     
 end package surfer_pkg;

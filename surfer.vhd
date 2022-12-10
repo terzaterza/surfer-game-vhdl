@@ -185,7 +185,7 @@ begin
         elsif rising_edge(clk) then
             if reset_speed='1' then
                 speed <= 0;
-            elsif s_curr=s_inc_speed then
+            elsif s_curr=s_inc_speed and speed < speed_range'high then
                 speed <= speed + 1;
             end if;
         end if;
@@ -196,5 +196,5 @@ begin
     move   <= '1' when s_curr=s_move else '0';
     copy   <= '1' when s_curr=s_burst_cpy else'0';
     
-    reset_speed <= miss; -- add more if needed
+    reset_speed <= '1' when hit='1' and first(0)='1' else '0';
 end architecture;

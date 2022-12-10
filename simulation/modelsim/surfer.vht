@@ -63,11 +63,21 @@ BEGIN
 	rst => rst,
 	up => up
 	);
-clk_50MHz <= not clk_50MHz after clkp / 2;
+clk_50MHz <= not clk_50MHz after clkp / 4;
 always : PROCESS                                              
 BEGIN                                                         
 	wait for clkp;
 	rst <= '0';
+	wait for clkp;
+	up <= '1';
+	wait for 2 * clkp;
+	up <= '0';
+	down <= '1';
+	wait for 4 * clkp;
+	up <= '1';
+	wait for clkp;
+	up <= '0';
+	down <= '0';
 WAIT;                                                        
 END PROCESS always;                                          
 END surfer_arch;

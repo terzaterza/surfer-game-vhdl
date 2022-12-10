@@ -40,6 +40,8 @@ component counter is
 end component;
 
 signal rand : std_logic_vector(7 downto 0);
+signal count_to : spawn_count_range;
+signal count_end : std_logic;
 
 constant seed : std_logic_vector(7 downto 0) := x"00";
 constant pos_init : std_logic_vector(10 downto 0) := "100" & x"4c";
@@ -57,10 +59,22 @@ begin
         port map(
             clk, rst,
             count_en,
-            spawn_count_range'high,
+            count_to,
             open,
-            take
+            count_end
         );
         
+    set_count_to: process(clk) is
+    begin
+        if rst='1' then
+            count_to <= spawn_count_min;
+        elsif rising_edge(clk) then
+            if count_end='1' and count_en='1' then
+                count_to <= spawn_count_min + to_integer(unsigned(rand(6 downto 0)));
+            end if;
+        end if;
+    end process;
+    
     info <= pos_init & rand(2 downto 0);
+    take <= count_end;
 end architecture;

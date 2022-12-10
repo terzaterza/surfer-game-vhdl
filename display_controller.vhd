@@ -12,16 +12,16 @@ entity display_controller is
 end entity;
 
 architecture testing_only of display_controller is
-    signal count_ref : natural range 0 to 25 := 0;
+    signal count_ref : natural range 0 to 9 := 0;
 begin
 count_process: process(clk, rst) is
     begin
         if rst='1' then
             count_ref <= 0;
         elsif rising_edge(clk) then
-            count_ref <= (count_ref + 1) mod 26;
+            count_ref <= (count_ref + 1) mod 10;
         end if;
     end process;
     
-ref_tick <= '1' when count_ref=25 else '0';
+ref_tick <= '1' when count_ref=9 else '0';
 end architecture;

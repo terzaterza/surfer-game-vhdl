@@ -38,10 +38,11 @@ next_lane_process :  process(clk, rst) is
         if(rst = '1') then
             curr_lane <= 1;
         else 
+            -- change to go_up and go_down
             if(rising_edge(clk)) then
-                if((go_up = '1') and (curr_lane /= 0)) then
+                if((up = '1') and (curr_lane /= 0)) then
                     curr_lane <= curr_lane - 1;
-                elsif((go_down='1') and (curr_lane /= 2)) then
+                elsif((down='1') and (curr_lane /= 2)) then
                     curr_lane <= curr_lane + 1;
                 end if;
             end if;
