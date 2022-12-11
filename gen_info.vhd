@@ -64,7 +64,7 @@ begin
             count_end
         );
         
-    set_count_to: process(clk) is
+    set_count_to: process(clk, rst) is
     begin
         if rst='1' then
             count_to <= spawn_count_min;

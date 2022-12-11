@@ -27,9 +27,9 @@ component debouncer is
 	);
 end component;
 
-    signal go_up        :   std_logic;
-    signal go_down      :   std_logic;
-    signal curr_lane    :   natural range 0 to 2;
+    signal go_up, not_up     :   std_logic;
+    signal go_down, not_down :   std_logic;
+    signal curr_lane         :   natural range 0 to 2;
 
 begin
 
@@ -38,11 +38,10 @@ next_lane_process :  process(clk, rst) is
         if(rst = '1') then
             curr_lane <= 1;
         else 
-            -- change to go_up and go_down
             if(rising_edge(clk)) then
-                if((up = '1') and (curr_lane /= 0)) then
+                if((go_up = '1') and (curr_lane /= 0)) then
                     curr_lane <= curr_lane - 1;
-                elsif((down='1') and (curr_lane /= 2)) then
+                elsif((go_down='1') and (curr_lane /= 2)) then
                     curr_lane <= curr_lane + 1;
                 end if;
             end if;
@@ -51,9 +50,10 @@ next_lane_process :  process(clk, rst) is
 
     lane <= curr_lane;
     
-    D0: debouncer generic map (1000000) port map(clk, rst, up, go_up);
-    D1: debouncer generic map (1000000) port map(clk, rst, down, go_down);
+    D0: debouncer generic map (1000000) port map(clk, rst, not_up, go_up);
+    D1: debouncer generic map (1000000) port map(clk, rst, not_down, go_down);
     
-    -- not up, down
+    not_up <= not up;
+    not_down <= not down;
     
 end architecture Behavioral;

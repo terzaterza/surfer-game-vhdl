@@ -24,7 +24,8 @@ entity vga_sync is
 		hpos : out integer range 0 to H_DISPLAY - 1;
 		vpos : out integer range 0 to V_DISPLAY - 1;
 		Rin, Gin, Bin : in std_logic_vector(7 downto 0);
-		Rout, Gout, Bout : out std_logic_vector(7 downto 0)
+		Rout, Gout, Bout : out std_logic_vector(7 downto 0);
+        ref_tick : out std_logic
 	);
 end vga_sync;
 
@@ -97,6 +98,8 @@ begin
 	Rout <= Rin when disp_ena = '1' else (others => '0');
 	Gout <= Gin when disp_ena = '1' else (others => '0');
 	Bout <= Bin when disp_ena = '1' else (others => '0');
+    
+    ref_tick <= '1' when h_count=H_DISPLAY-1 and v_count=V_DISPLAY-1 else '0';
 	
 
 end behavioral;

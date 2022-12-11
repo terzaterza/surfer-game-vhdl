@@ -10,9 +10,13 @@ entity surfer is
         up, down  : in std_logic;
         
         digit1, digit0 : out std_logic_vector(6 downto 0); -- add 8 bit to (2 digit) 7seg converter
-        lives_leds     : out std_logic_vector(2 downto 0)
+        lives_leds     : out std_logic_vector(2 downto 0);
         
         -- vga outputs
+        vga_clk : out std_logic;
+        h_sync, v_sync  : out std_logic;
+        sync_n, blank_n : out std_logic;
+        r_out, g_out, b_out : out std_logic_vector(7 downto 0)
     );
 end entity;
 
@@ -88,8 +92,40 @@ architecture structural of surfer is
     
     component display_controller is
         port (
-            clk, rst : in std_logic;
-            
+            clk, rst    : in std_logic;
+            lane        : in lane_range;
+            xp          : in disp_width_range;
+            yp          : in disp_height_range;
+            size        : in q_size_range; --broj elemenata u memoriji
+            mem_data    : in mem_data; --info o bombi ili novcicu
+            mem_addr    : out mem_addr; -- adresa sa koje citamo info
+            disp_color  : out color --boja koju prosledjujemo vga_sync-u
+        );
+        end component;
+    
+    component vga_sync is
+        generic (
+            -- Default display mode is 1024x768@60Hz
+            -- Horizontal line
+            H_SYNC	: integer := 136;		-- sync pulse in pixels
+            H_BP		: integer := 160;		-- back porch in pixels
+            H_FP		: integer := 24;		-- front porch in pixels
+            H_DISPLAY: integer := 1024;	-- visible pixels
+            -- Vertical line
+            V_SYNC	: integer := 6;		-- sync pulse in pixels
+            V_BP		: integer := 29;		-- back porch in pixels
+            V_FP		: integer := 3;		-- front porch in pixels
+            V_DISPLAY: integer := 768		-- visible pixels
+        );
+        port (
+            clk : in std_logic;
+            reset : in std_logic;
+            hsync, vsync : out std_logic;
+            sync_n, blank_n : out std_logic;
+            hpos : out integer range 0 to H_DISPLAY - 1;
+            vpos : out integer range 0 to V_DISPLAY - 1;
+            Rin, Gin, Bin : in std_logic_vector(7 downto 0);
+            Rout, Gout, Bout : out std_logic_vector(7 downto 0);
             ref_tick : out std_logic
         );
     end component;
@@ -120,6 +156,10 @@ architecture structural of surfer is
     
     signal reset_speed : std_logic;
     signal hit, miss   : std_logic;
+    
+    signal xp : disp_width_range;
+    signal yp : disp_height_range;
+    signal disp_color : color;
 begin
     CORE_MEM_I: mem port map (clk, core_w_data, core_r_addr, core_w_addr, core_w_en, core_r_data);
     DISP_MEM_I: mem port map (clk, disp_w_data, disp_r_addr, disp_w_addr, disp_w_en, disp_r_data);
@@ -136,9 +176,18 @@ begin
             
     PLAYER_CONTROLLER_I: player_controller port map (clk, rst, up, down, lane);
     COLLISION_CONTROLLER_I: collision_controller port map (lane, size, first, hit, miss);
-    DISPLAY_CONTROLLER_I: display_controller port map (clk, rst, ref_tick);
+    DISPLAY_CONTROLLER_I: display_controller port map (
+        clk, rst, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color); -- change this
     
-    clock_div: process(clk_50MHz) is -- replace with pll
+    VGA_SYNC_I: vga_sync
+        generic map ( 96, 48, 16, 640, 2, 33, 10, 480)
+        port map (
+        clk, rst, h_sync, v_sync, sync_n, blank_n, xp, yp,
+        disp_color(23 downto 16), disp_color(15 downto 8), disp_color(7 downto 0),
+        r_out, g_out, b_out, ref_tick
+    );
+    
+    clock_div: process(clk_50MHz, rst) is -- replace with pll
     begin
         if rst='1' then
             clk <= '0';
@@ -146,15 +195,7 @@ begin
             clk <= not clk;
         end if;
     end process;
-    
---    with s_curr select
---    s_next <= coll_check when burst_cpy,
---              add_elem   when coll_check,
---              move       when add_elem,
---              inc_speed  when move,
---              wait_ref   when inc_speed,
---              burst_cpy  when wait_ref;
-              
+                  
     update_next: process(s_curr, ref_tick) is
     begin
         case s_curr is
@@ -178,7 +219,7 @@ begin
         end if;
     end process;
     
-    update_speed: process(clk) is
+    update_speed: process(clk, rst) is
     begin
         if rst='1' then
             speed <= 0;
@@ -197,4 +238,6 @@ begin
     copy   <= '1' when s_curr=s_burst_cpy else'0';
     
     reset_speed <= '1' when hit='1' and first(0)='1' else '0';
+    
+    vga_clk <= clk;
 end architecture;

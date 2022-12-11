@@ -28,7 +28,7 @@ package surfer_pkg is
     constant spawn_count_range_len : natural := 150;
     subtype  spawn_count_range is natural range spawn_count_min to spawn_count_min + spawn_count_range_len;
     
-    subtype disp_width_range is natural range 0 to 1023;
-    subtype disp_height_range is natural range 0 to 767;
+    subtype disp_width_range is natural range 0 to 639;
+    subtype disp_height_range is natural range 0 to 479;
         
 end package surfer_pkg;

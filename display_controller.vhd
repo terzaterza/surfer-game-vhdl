@@ -71,15 +71,12 @@ begin
         rom_select <= 0;
         x := std_logic_vector(to_unsigned(xp - c_indent, 6));
         y := std_logic_vector(to_unsigned(yp - top_edges(lane), 6));
-        --rom_addr_vec <= (y(6 downto 0) & "00000") + (y(6 downto 0) & "00000") + x;
-        --rom_addr_vec <= y * std_logic_vector(to_unsigned(48, 6)) + x;
         rom_addr_vec <= (("0" & y & "00000") + ("00" & y & "0000")) + x;
     elsif size > 0 then
         if (xp >= bomb_pos and xp < bomb_pos + object_dim) and
            (yp >= top_edges(bomb_lane) and yp < top_edges(bomb_lane) + object_dim) then
             x := std_logic_vector(to_unsigned(xp - bomb_pos, 6));
             y := std_logic_vector(to_unsigned(yp - top_edges(bomb_lane), 6));
-            -- rom_addr_vec <= (y(6 downto 0) & "00000") + (y(6 downto 0) & "00000") + x;
             rom_addr_vec <= (("0" & y & "00000") + ("00" & y & "0000")) + x;
             if current_bomb(0)='0' then
                 rom_select <= 1;
