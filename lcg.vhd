@@ -13,7 +13,7 @@ end entity;
 architecture behavioral of lcg is
 
 -- change to: coefmult_altmemmult_kdo
-component sw_mult is
+component coefmult_altmemmult_kdo is
     port (
         clock	:	IN  STD_LOGIC;
         data_in	:	IN  STD_LOGIC_VECTOR (7 DOWNTO 0);
@@ -32,7 +32,7 @@ constant c_add : std_logic_vector := x"004a";
 begin
 
     -- change to: coefmult_altmemmult_kdo
-    MULT: sw_mult
+    MULT: coefmult_altmemmult_kdo
         port map (
             clock   => clk,
             data_in => acc(7 downto 0),

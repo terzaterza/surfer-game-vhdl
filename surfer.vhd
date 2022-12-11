@@ -16,7 +16,7 @@ entity surfer is
         vga_clk : out std_logic;
         h_sync, v_sync  : out std_logic;
         sync_n, blank_n : out std_logic;
-        r_out, g_out, b_out : out std_logic_vector(7 downto 0)
+        r_out, g_out, b_out : out std_logic_vector(3 downto 0)
     );
 end entity;
 
@@ -160,6 +160,7 @@ architecture structural of surfer is
     signal xp : disp_width_range;
     signal yp : disp_height_range;
     signal disp_color : color;
+    signal vga_r, vga_g, vga_b : std_logic_vector(7 downto 0);
 begin
     CORE_MEM_I: mem port map (clk, core_w_data, core_r_addr, core_w_addr, core_w_en, core_r_data);
     DISP_MEM_I: mem port map (clk, disp_w_data, disp_r_addr, disp_w_addr, disp_w_en, disp_r_data);
@@ -184,7 +185,7 @@ begin
         port map (
         clk, rst, h_sync, v_sync, sync_n, blank_n, xp, yp,
         disp_color(23 downto 16), disp_color(15 downto 8), disp_color(7 downto 0),
-        r_out, g_out, b_out, ref_tick
+        vga_r, vga_g, vga_b, ref_tick
     );
     
     clock_div: process(clk_50MHz, rst) is -- replace with pll
@@ -226,7 +227,7 @@ begin
         elsif rising_edge(clk) then
             if reset_speed='1' then
                 speed <= 0;
-            elsif s_curr=s_inc_speed and speed < speed_range'high then
+            elsif s_curr=s_inc_speed and speed < speed_range'high and (hit='1' or miss='1') then
                 speed <= speed + 1;
             end if;
         end if;
@@ -240,4 +241,9 @@ begin
     reset_speed <= '1' when hit='1' and first(0)='1' else '0';
     
     vga_clk <= clk;
+    r_out <= vga_r(7 downto 4);
+    g_out <= vga_g(7 downto 4);
+    b_out <= vga_b(7 downto 4);
+    
+    lives_leds <= generated_info(2 downto 0);
 end architecture;

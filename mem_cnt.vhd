@@ -48,7 +48,8 @@ begin
                 elsif delete='1' then
                     -- assert size > 0
                     queue_size <= queue_size - 1;
-                    queue_head <= (queue_head + 1) mod q_size_range'high; -- mod only needed for simulation
+                    --queue_head <= (queue_head + 1) mod q_size_range'high; -- mod only needed for simulation
+                    queue_head <= queue_head + 1;
                 end if;
             end if;
         end if;
