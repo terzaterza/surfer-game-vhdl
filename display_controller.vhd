@@ -19,24 +19,23 @@ port (
 end display_controller;
 
 architecture behavioral of display_controller is
-    constant top_edges is array (0 to 2) of integer;
+    type edge_array is array (0 to 2) of disp_height_range;
+    constant top_edges : edge_array := (120, 240, 360);
     
-    signal lookup : q_size_range;
+    signal lookup : natural range 0 to q_size_range'high - 1;
     signal current_bomb : bomb_info;
     
+    signal bomb_pos  : natural;
+    signal bomb_lane : lane_range;
 begin
 
-draw: process(lane, xp, yp, size, current_bomb) is
-variable bomb_pos  : natural;
-variable bomb_lane : lane_range;
+draw: process(lane, xp, yp, size, bomb_pos, bomb_lane) is
 begin
     disp_color <= background_color;
     if (xp >= c_indent and xp < c_indent + surfer_dim) and
        (yp >= top_edges(lane) and yp < top_edges(lane) + surfer_dim) then
         -- draw surfer
     elsif size > 0 then
-        bomb_pos  := to_integer(signed(current_bomb(13 downto 3)));
-        bomb_lane := to_integer(unsigned(current_bomb(2 downto 1)));
         if (xp >= bomb_pos and xp < bomb_pos + object_dim) and
            (yp >= top_edges(bomb_lane) and yp < top_edges(bomb_lane) + object_dim) then
             -- draw bomb
@@ -49,11 +48,20 @@ begin
     if rst='1' then
         lookup <= 0;
     elsif rising_edge(clk) then
-        
+        if xp >= bomb_pos + object_dim then
+            if lookup >= size then
+                lookup <= 0;
+            else
+                lookup <= lookup + 1;
+            end if;
+        end if;
     end if;
 end process;
 
+bomb_pos  <= to_integer(signed(current_bomb(13 downto 3)));
+bomb_lane <= to_integer(unsigned(current_bomb(2 downto 1)));
+
 current_bomb <= mem_data(13 downto 0);
-mem_addr     <= std_logic_vector(to_unsigned(lookup));
+mem_addr     <= std_logic_vector(to_unsigned(lookup, 4));
 
 end architecture behavioral;
