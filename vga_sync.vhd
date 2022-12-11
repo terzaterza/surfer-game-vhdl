@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+library work;
+use work.surfer_pkg.all;
 
 entity vga_sync is
 	generic (
@@ -36,9 +38,30 @@ architecture behavioral of vga_sync is
 	signal h_count : integer range 0 to H_PERIOD - 1;
 	signal v_count : integer range 0 to V_PERIOD - 1;
 	signal disp_ena : std_logic;
+    
+    signal count_tick : natural range 0 to debug_vga_ref_tick := 0;
 
 begin
 
+    GEN_VGA_DEBUG: if DEBUG generate
+        process(clk, reset) is
+        begin
+            if reset='1' then
+                count_tick <= 0;
+                ref_tick <= '0';
+            elsif rising_edge(clk) then
+                if count_tick < debug_vga_ref_tick then
+                    count_tick <= count_tick + 1;
+                    ref_tick <= '0';
+                else
+                    ref_tick <= '1';
+                    count_tick <= 0;
+                end if;
+            end if;
+        end process;
+    end generate;
+
+    GEN_VGA_NO_DEBUG: if not DEBUG generate
 	sync_n <= '0';		-- no sync on green
 	blank_n <= '1';	-- no direct blanking
 	
@@ -100,6 +123,6 @@ begin
 	Bout <= Bin when disp_ena = '1' else (others => '0');
     
     ref_tick <= '1' when h_count=H_DISPLAY-1 and v_count=V_DISPLAY-1 else '0';
-	
+	end generate;
 
 end behavioral;

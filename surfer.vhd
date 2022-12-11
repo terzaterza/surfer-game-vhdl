@@ -143,8 +143,9 @@ architecture structural of surfer is
     signal disp_w_data, disp_r_data : mem_data;
     signal disp_w_addr, disp_r_addr : mem_addr;
     signal disp_w_en : std_logic;
-    
+        
     signal s_curr, s_next : game_states;
+    signal s_copy_count   : q_size_range;
     
     signal lane : lane_range;
     
@@ -197,7 +198,7 @@ begin
         end if;
     end process;
                   
-    update_next: process(s_curr, ref_tick) is
+    update_next: process(s_curr, ref_tick, s_copy_count) is
     begin
         case s_curr is
             when s_coll_check => s_next <= s_add_elem;
@@ -207,8 +208,20 @@ begin
             when s_wait_ref =>
                 if ref_tick='0' then s_next <= s_wait_ref;
                 else s_next <= s_burst_cpy; end if;
-            when s_burst_cpy  => s_next <= s_coll_check;
+            when s_burst_cpy  => s_next <= s_wait_cpy;
+            when s_wait_cpy   =>
+                if s_copy_count>=size then s_next <= s_coll_check;
+                else s_next <= s_wait_cpy; end if;
         end case;
+    end process;
+    
+    count_cpy: process(clk, rst) is -- should maybe check burst_state from mem_cnt instead of having this counter
+    begin
+        if rst='1' then s_copy_count <= 0;
+        elsif rising_edge(clk) then
+            if s_curr=s_wait_cpy then s_copy_count <= s_copy_count + 1;
+            else s_copy_count <= 0; end if;
+        end if;
     end process;
               
     update_curr: process(clk, rst) is
@@ -223,10 +236,10 @@ begin
     update_speed: process(clk, rst) is
     begin
         if rst='1' then
-            speed <= 0;
+            speed <= 1;
         elsif rising_edge(clk) then
             if reset_speed='1' then
-                speed <= 0;
+                speed <= 1;
             elsif s_curr=s_inc_speed and speed < speed_range'high and (hit='1' or miss='1') then
                 speed <= speed + 1;
             end if;

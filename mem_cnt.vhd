@@ -119,7 +119,7 @@ begin
         if rising_edge(clk) then
             if add='1' and queue_size=0 then
                 first <= info;
-            elsif burst_state='0' then
+            elsif burst_state='0' then -- should fix glitch on this transition
                 first <= core_r_data(13 downto 0);
             end if;
         end if;

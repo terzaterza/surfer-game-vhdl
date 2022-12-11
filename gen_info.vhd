@@ -44,7 +44,6 @@ signal count_to : spawn_count_range;
 signal count_end : std_logic;
 
 constant seed : std_logic_vector(7 downto 0) := x"00";
-constant pos_init : std_logic_vector(10 downto 0) := "100" & x"4c";
 
 begin
     LCG_I : lcg
@@ -70,11 +69,15 @@ begin
             count_to <= spawn_count_min;
         elsif rising_edge(clk) then
             if count_end='1' and count_en='1' then
-                count_to <= spawn_count_min + to_integer(unsigned(rand(6 downto 0)));
+                if DEBUG then
+                    count_to <= spawn_count_min + (to_integer(unsigned(rand(6 downto 0))) mod spawn_count_range_len);
+                else
+                    count_to <= spawn_count_min + to_integer(unsigned(rand(6 downto 0)));
+                end if;
             end if;
         end if;
     end process;
     
-    info <= pos_init & rand(2 downto 0);
+    info <= std_logic_vector(to_unsigned(spawn_pos, 11)) & rand(2 downto 0);
     take <= count_end;
 end architecture;

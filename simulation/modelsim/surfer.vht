@@ -92,7 +92,7 @@ clk_50MHz <= not clk_50MHz after clkp / 2;
 
 always : PROCESS                                              
 BEGIN                                                         
-	wait for clkp;
+	wait for 3 * clkp;
 	rst <= '0';
 WAIT;                                                        
 END PROCESS always;                                          
