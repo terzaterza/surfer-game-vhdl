@@ -43,12 +43,10 @@ begin
         elsif rising_edge(clk) then
             if burst_state='0' then
                 if add='1' then
-                    -- core_w signals controlled in WRITE_CORE
                     queue_size <= queue_size + 1;
                 elsif delete='1' then
                     -- assert size > 0
                     queue_size <= queue_size - 1;
-                    --queue_head <= (queue_head + 1) mod q_size_range'high; -- mod only needed for simulation
                     queue_head <= queue_head + 1;
                 end if;
             end if;
@@ -60,7 +58,7 @@ begin
         if rst='1' then
             burst_state <= '0';
         elsif rising_edge(clk) then
-            if (copy='1' or move='1') and queue_size > 0 then
+            if (copy='1' or move='1') and queue_size > 0 and burst_state='0' then
                 burst_state <= '1';
                 burst_count <= 0;
                 if move='1' then burst_mode <= '1';
@@ -76,7 +74,7 @@ begin
     READ_CORE: process(queue_head, burst_count, burst_state) is -- comb process
     begin
         if burst_state='1' then
-            core_r_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
+            core_r_addr <= std_logic_vector(to_unsigned(queue_head + burst_count + 1, mem_addr'length));
         else
             core_r_addr <= std_logic_vector(to_unsigned(queue_head, mem_addr'length));
         end if;

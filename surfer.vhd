@@ -210,7 +210,7 @@ begin
                 else s_next <= s_burst_cpy; end if;
             when s_burst_cpy  => s_next <= s_wait_cpy;
             when s_wait_cpy   =>
-                if s_copy_count>=size then s_next <= s_coll_check;
+                if s_copy_count>size then s_next <= s_coll_check; -- potential problem with s_copy_count > size since both are q_size_range
                 else s_next <= s_wait_cpy; end if;
         end case;
     end process;
