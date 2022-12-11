@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
 library work;
 use work.surfer_pkg.all;
 
@@ -19,6 +20,28 @@ port (
 end display_controller;
 
 architecture behavioral of display_controller is
+    component surfer_rom IS
+        PORT (
+            address		: IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+            clock		: IN STD_LOGIC  := '1';
+            q		: OUT STD_LOGIC_VECTOR (11 DOWNTO 0)
+        );
+    END component;
+    component coin_rom IS
+        PORT (
+            address		: IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+            clock		: IN STD_LOGIC  := '1';
+            q		: OUT STD_LOGIC_VECTOR (11 DOWNTO 0)
+        );
+    END component;
+    component bomb_rom IS
+        PORT (
+            address		: IN STD_LOGIC_VECTOR (11 DOWNTO 0);
+            clock		: IN STD_LOGIC  := '1';
+            q		: OUT STD_LOGIC_VECTOR (11 DOWNTO 0)
+        );
+    END component;
+
     type edge_array is array (0 to 2) of disp_height_range;
     constant top_edges : edge_array := (120, 240, 360);
     
@@ -27,18 +50,38 @@ architecture behavioral of display_controller is
     
     signal bomb_pos  : natural;
     signal bomb_lane : lane_range;
+    
+    signal rom_addr_vec : std_logic_vector(11 downto 0);
+    signal rom_select   : natural range 0 to 3;
+    signal surfer_data, coin_data, bomb_data : std_logic_vector(11 downto 0);
 begin
 
-draw: process(lane, xp, yp, size, bomb_pos, bomb_lane) is
+SURFER_ROM_I: surfer_rom port map (rom_addr_vec, clk, surfer_data);
+COIN_ROM_I  : coin_rom   port map (rom_addr_vec, clk, coin_data);
+BOMB_ROM_I  : bomb_rom   port map (rom_addr_vec, clk, bomb_data);
+
+draw: process(lane, xp, yp, size, bomb_pos, bomb_lane, current_bomb) is
+variable x, y : std_logic_vector(11 downto 0); -- assuming same dim for surfer and object
 begin
-    disp_color <= background_color;
+    rom_select <= 3;
+    rom_addr_vec <= x"000";
     if (xp >= c_indent and xp < c_indent + surfer_dim) and
        (yp >= top_edges(lane) and yp < top_edges(lane) + surfer_dim) then
-        -- draw surfer
+        rom_select <= 0;
+        x := std_logic_vector(to_unsigned(xp - c_indent, 12));
+        y := std_logic_vector(to_unsigned(yp - top_edges(lane), 12));
+        rom_addr_vec <= (y(6 downto 0) & "00000") + (y(6 downto 0) & "00000") + x;
     elsif size > 0 then
         if (xp >= bomb_pos and xp < bomb_pos + object_dim) and
            (yp >= top_edges(bomb_lane) and yp < top_edges(bomb_lane) + object_dim) then
-            -- draw bomb
+            x := std_logic_vector(to_unsigned(xp - bomb_pos, 12));
+            y := std_logic_vector(to_unsigned(yp - top_edges(bomb_lane), 12));
+            rom_addr_vec <= (y(6 downto 0) & "00000") + (y(6 downto 0) & "00000") + x;
+            if current_bomb(0)='0' then
+                rom_select <= 1;
+            else
+                rom_select <= 2;
+            end if;
         end if;
     end if;
 end process;
@@ -57,6 +100,18 @@ begin
         end if;
     end if;
 end process;
+
+with rom_select select
+    disp_color <= surfer_data(11 downto 8) & x"0" &
+                  surfer_data(7 downto 4) & x"0" &
+                  surfer_data(3 downto 0) & x"0" when 0,
+                  coin_data(11 downto 8) & x"0" &
+                  coin_data(7 downto 4) & x"0" &
+                  coin_data(3 downto 0) & x"0" when 1,
+                  bomb_data(11 downto 8) & x"0" &
+                  bomb_data(7 downto 4) & x"0" &
+                  bomb_data(3 downto 0) & x"0" when 2,
+                  background_color when 3; -- add alpha checking
 
 bomb_pos  <= to_integer(signed(current_bomb(13 downto 3)));
 bomb_lane <= to_integer(unsigned(current_bomb(2 downto 1)));
