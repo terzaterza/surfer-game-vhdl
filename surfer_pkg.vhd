@@ -22,7 +22,7 @@ package surfer_pkg is
     
     subtype color is std_logic_vector(23 downto 0);
     constant background_color : color := x"007777";
-    constant alpha_color      : color := x"ff00ff";
+    constant alpha_color      : color := x"f000f0";
     
     constant spawn_count_min       : natural := 30;
     constant spawn_count_range_len : natural := 150;
