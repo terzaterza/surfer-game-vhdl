@@ -19,19 +19,17 @@ end collision_controller;
 architecture Behavioral of collision_controller is
     signal object_coll  : std_logic;
     signal object_exit  : std_logic;
+    
+    signal first_pos  : integer;
+    signal first_lane : lane_range;
 begin
     
-hit_process :   process(first, lane, size) is
-    variable bomb_pos  : natural;
-    variable bomb_lane : lane_range;
+hit_process :   process(first_pos, first_lane, lane, size) is
     begin
         if(size = 0) then
             object_coll <= '0';
         else
-            bomb_pos  := to_integer(unsigned(first(13 downto 3))); -- promeniti svuda unsigned u signed (natural u integer)
-            bomb_lane := to_integer(unsigned(first(2 downto 1)));
-            
-            if lane = bomb_lane and bomb_pos < c_indent + surfer_dim and bomb_pos >= c_indent then
+            if lane = first_lane and first_pos < c_indent + surfer_dim and first_pos >= c_indent then
                 object_coll <= '1';
             else
                 object_coll <= '0';
@@ -39,18 +37,21 @@ hit_process :   process(first, lane, size) is
         end if;
     end process;
     
-miss_process :  process(first, size) is
+miss_process :  process(first_pos, size) is
     begin
         if(size = 0) then
             object_exit <= '0';
         else
-            if(to_integer(signed(first(13 downto 3))) < 0) then
+            if first_pos < 0 then
                 object_exit <= '1';
             else
                 object_exit <= '0';
             end if;
         end if;
     end process;
+    
+    first_pos  <= to_integer(signed(first(13 downto 3))); -- promeniti svuda unsigned u signed (natural u integer)
+    first_lane <= to_integer(unsigned(first(2 downto 1)));
     
     hit <= object_coll;
     miss <= object_exit;

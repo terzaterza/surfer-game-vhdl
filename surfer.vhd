@@ -145,7 +145,7 @@ architecture structural of surfer is
     signal disp_w_en : std_logic;
         
     signal s_curr, s_next : game_states;
-    signal s_copy_count   : q_size_range;
+    signal s_copy_count   : natural range 0 to s_copy_wait;
     
     signal lane : lane_range;
     
@@ -198,10 +198,12 @@ begin
         end if;
     end process;
                   
-    update_next: process(s_curr, ref_tick, s_copy_count) is
+    update_next: process(s_curr, ref_tick, s_copy_count, size, delete) is
     begin
         case s_curr is
-            when s_coll_check => s_next <= s_add_elem;
+            when s_coll_check =>
+                if delete='1' then s_next <= s_inc_speed;
+                else s_next <= s_add_elem; end if;
             when s_add_elem   => s_next <= s_inc_speed;
             when s_inc_speed  => s_next <= s_move;
             when s_move       => s_next <= s_wait_ref;
@@ -210,7 +212,7 @@ begin
                 else s_next <= s_burst_cpy; end if;
             when s_burst_cpy  => s_next <= s_wait_cpy;
             when s_wait_cpy   =>
-                if s_copy_count>size then s_next <= s_coll_check; -- potential problem with s_copy_count > size since both are q_size_range
+                if s_copy_count=size+3 then s_next <= s_coll_check; -- potential problem with s_copy_count > size since both are q_size_range
                 else s_next <= s_wait_cpy; end if;
         end case;
     end process;
@@ -240,7 +242,7 @@ begin
         elsif rising_edge(clk) then
             if reset_speed='1' then
                 speed <= 1;
-            elsif s_curr=s_inc_speed and speed < speed_range'high and (hit='1' or miss='1') then
+            elsif s_curr=s_inc_speed and speed < speed_range'high and (hit='1' and first(0)='0') then
                 speed <= speed + 1;
             end if;
         end if;

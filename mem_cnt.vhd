@@ -42,12 +42,13 @@ begin
             queue_head <= 0;
         elsif rising_edge(clk) then
             if burst_state='0' then
-                if add='1' then
+                if add='1' and queue_size < q_size_range'high then
                     queue_size <= queue_size + 1;
                 elsif delete='1' then
                     -- assert size > 0
                     queue_size <= queue_size - 1;
-                    queue_head <= queue_head + 1;
+                    if DEBUG then queue_head <= (queue_head + 1) mod q_size_range'high;
+                    else queue_head <= queue_head + 1; end if;
                 end if;
             end if;
         end if;
@@ -57,15 +58,17 @@ begin
     begin
         if rst='1' then
             burst_state <= '0';
+            burst_count <= 0;
         elsif rising_edge(clk) then
             if (copy='1' or move='1') and queue_size > 0 and burst_state='0' then
                 burst_state <= '1';
                 burst_count <= 0;
-                if move='1' then burst_mode <= '1';
-                else burst_mode <= '0'; end if;
+                if copy='1' then burst_mode <= '0';
+                else burst_mode <= '1'; end if;
             elsif burst_count >= queue_size-1 then
                 burst_state <= '0';
-            elsif burst_state='1' then
+            end if;
+            if burst_state='1' then
                 burst_count <= burst_count + 1;
             end if;
         end if;
@@ -100,11 +103,12 @@ begin
             core_w_en <= '0';
             if burst_state='1' and burst_mode='1' then
                 read_pos := to_integer(signed(core_r_data(13 downto 3)));
-                new_pos := std_logic_vector(to_signed(read_pos - speed, 11));
+                new_pos  := std_logic_vector(to_signed(read_pos - speed, 11));
                 core_w_addr <= std_logic_vector(to_unsigned(queue_head + burst_count, mem_addr'length));
                 core_w_data <= "00" & new_pos & core_r_data(2 downto 0);
                 core_w_en <= '1';
-            elsif add='1' then
+            end if;
+            if burst_state='0' and add='1' then
                 core_w_addr <= std_logic_vector(to_unsigned(queue_head + queue_size, mem_addr'length));
                 core_w_data <= "00" & info;
                 core_w_en <= '1';

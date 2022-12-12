@@ -10,7 +10,7 @@ package surfer_pkg is
     subtype mem_addr is std_logic_vector(3 downto 0);
     
     subtype q_size_range is natural range 0 to 16;
-    subtype speed_range is natural range 0 to 10;
+    subtype speed_range is natural range 0 to 5;
     
     subtype lane_range is natural range 0 to 2;
     
@@ -20,6 +20,7 @@ package surfer_pkg is
     
     constant DEBUG : boolean := true;
     
+    constant s_copy_wait : natural := 20;    
     
     constant surfer_dim : natural := 48;
     constant object_dim : natural := 48;
@@ -32,13 +33,13 @@ package surfer_pkg is
     constant alpha_color      : color := x"f000f0";
     
     constant spawn_pos             : natural := tern(DEBUG, c_indent + surfer_dim + 5, display_width-1);
-    constant spawn_count_min       : natural := tern(DEBUG, 2, 30); -- number of ref_ticks
-    constant spawn_count_range_len : natural := tern(DEBUG, 3, 150);
+    constant spawn_count_min       : natural := tern(DEBUG, 3, 30); -- number of ref_ticks
+    constant spawn_count_range_len : natural := tern(DEBUG, 5, 150);
     subtype  spawn_count_range is natural range spawn_count_min to spawn_count_min + spawn_count_range_len;
     
     subtype disp_width_range is natural range 0 to display_width - 1;
     subtype disp_height_range is natural range 0 to display_height - 1;
     
-    constant debug_vga_ref_tick : natural := 10;
+    constant debug_vga_ref_tick : natural := 15;
         
 end package surfer_pkg;

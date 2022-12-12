@@ -18,7 +18,6 @@ architecture structural of gen_info is
 component lcg is
     port (
         clk, rst : in std_logic;        
-        seed     : in std_logic_vector(7 downto 0);        
         num     : out std_logic_vector(7 downto 0)
     );
 end component;
@@ -49,7 +48,6 @@ begin
     LCG_I : lcg
         port map (
             clk, rst,
-            seed,
             rand
         );
         
@@ -78,6 +76,6 @@ begin
         end if;
     end process;
     
-    info <= std_logic_vector(to_unsigned(spawn_pos, 11)) & rand(2 downto 0);
+    info <= std_logic_vector(to_unsigned(spawn_pos, 11)) & rand(5 downto 3);
     take <= count_end;
 end architecture;
