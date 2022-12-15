@@ -66,13 +66,12 @@ begin
         if rst='1' then
             count_to <= spawn_count_min;
         elsif rising_edge(clk) then
-            if count_end='1' and count_en='1' then
-                if DEBUG then
-                    count_to <= spawn_count_min + (to_integer(unsigned(rand(6 downto 0))) mod spawn_count_range_len);
-                else
-                    count_to <= spawn_count_min + to_integer(unsigned(rand(6 downto 0)));
-                end if;
-            end if;
+            --if DEBUG then
+            --    count_to <= spawn_count_min;
+            --elsif count_end='1' and count_en='1' then
+            --    count_to <= spawn_count_min + to_integer(unsigned(rand(6 downto 0)));
+            --end if;
+            count_to <= spawn_count_min;
         end if;
     end process;
     

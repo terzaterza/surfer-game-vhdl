@@ -44,11 +44,9 @@ begin
             if burst_state='0' then
                 if add='1' and queue_size < q_size_range'high then
                     queue_size <= queue_size + 1;
-                elsif delete='1' then
-                    -- assert size > 0
+                elsif delete='1' and queue_size > 0 then
                     queue_size <= queue_size - 1;
-                    if DEBUG then queue_head <= (queue_head + 1) mod q_size_range'high;
-                    else queue_head <= queue_head + 1; end if;
+                    queue_head <= (queue_head + 1) mod q_size_range'high;
                 end if;
             end if;
         end if;

@@ -145,7 +145,7 @@ architecture structural of surfer is
     signal disp_w_en : std_logic;
         
     signal s_curr, s_next : game_states;
-    signal s_copy_count   : natural range 0 to s_copy_wait;
+    signal s_copy_count   : natural range 0 to copy_wait_count;
     
     signal lane : lane_range;
     
@@ -212,8 +212,8 @@ begin
                 else s_next <= s_burst_cpy; end if;
             when s_burst_cpy  => s_next <= s_wait_cpy;
             when s_wait_cpy   =>
-                if s_copy_count=size+3 then s_next <= s_coll_check; -- potential problem with s_copy_count > size since both are q_size_range
-                else s_next <= s_wait_cpy; end if;
+                if s_copy_count<copy_wait_count-1 then s_next <= s_wait_cpy;
+                else s_next <= s_coll_check; end if;
         end case;
     end process;
     
