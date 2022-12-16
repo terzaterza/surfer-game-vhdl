@@ -129,6 +129,21 @@ architecture structural of surfer is
             ref_tick : out std_logic
         );
     end component;
+    
+    component bin_to_bcd is
+        port(
+            clk, reset : in std_logic;
+            num_in     : in natural range 0 to 99;
+            bcd0, bcd1, bcd2, bcd3, bcd4: out std_logic_vector(3 downto 0)
+        );
+    end component;
+    
+    component bcd_to_7seg is
+        port (
+            digit   : in  std_logic_vector(3 downto 0);
+            display : out std_logic_vector(6 downto 0)
+        );
+    end component;
 
     signal clk      : std_logic;    
     signal ref_tick : std_logic; -- could be both ref_tick and v_sync from vga_sync
@@ -158,36 +173,48 @@ architecture structural of surfer is
     signal reset_speed : std_logic;
     signal hit, miss   : std_logic;
     
+    signal score       : natural range 0 to 99;
+    signal bcd1, bcd0  : std_logic_vector(3 downto 0);
+    
+    signal lives       : natural range 0 to 3;
+    
     signal xp : disp_width_range;
     signal yp : disp_height_range;
     signal disp_color : color;
     signal vga_r, vga_g, vga_b : std_logic_vector(7 downto 0);
 begin
-    CORE_MEM_I: mem port map (clk, core_w_data, core_r_addr, core_w_addr, core_w_en, core_r_data);
-    DISP_MEM_I: mem port map (clk, disp_w_data, disp_r_addr, disp_w_addr, disp_w_en, disp_r_data);
-    
-    GEN_INFO_I: gen_info port map(clk, rst, ref_tick, generated_take, generated_info);
-    
-    MEM_CONTROLLER_I: mem_cnt port map (
-        clk, rst,
-        add, delete, copy, move,
-        generated_info, speed,
-        core_r_data, core_w_en, core_w_data, core_w_addr, core_r_addr,
-        disp_w_en, disp_w_data, disp_w_addr,
-        first, size);
-            
-    PLAYER_CONTROLLER_I: player_controller port map (clk, rst, up, down, lane);
-    COLLISION_CONTROLLER_I: collision_controller port map (lane, size, first, hit, miss);
-    DISPLAY_CONTROLLER_I: display_controller port map (
-        clk, rst, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color); -- change this
-    
+    CORE_MEM_I: mem
+        port map (clk, core_w_data, core_r_addr, core_w_addr, core_w_en, core_r_data);
+    DISP_MEM_I: mem
+        port map (clk, disp_w_data, disp_r_addr, disp_w_addr, disp_w_en, disp_r_data);    
+    GEN_INFO_I: gen_info
+        port map(clk, rst, ref_tick, generated_take, generated_info);    
+    MEM_CONTROLLER_I: mem_cnt
+        port map (
+            clk, rst,
+            add, delete, copy, move,
+            generated_info, speed,
+            core_r_data, core_w_en, core_w_data, core_w_addr, core_r_addr,
+            disp_w_en, disp_w_data, disp_w_addr,
+            first, size);            
+    PLAYER_CONTROLLER_I: player_controller
+        port map (clk, rst, up, down, lane);
+    COLLISION_CONTROLLER_I: collision_controller
+        port map (lane, size, first, hit, miss);
+    DISPLAY_CONTROLLER_I: display_controller
+        port map (clk, rst, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color); -- change this    
     VGA_SYNC_I: vga_sync
         generic map ( 96, 48, 16, 640, 2, 33, 10, 480)
         port map (
         clk, rst, h_sync, v_sync, sync_n, blank_n, xp, yp,
         disp_color(23 downto 16), disp_color(15 downto 8), disp_color(7 downto 0),
-        vga_r, vga_g, vga_b, ref_tick
-    );
+        vga_r, vga_g, vga_b, ref_tick);    
+    BIN_TO_BCD_I: bin_to_bcd
+        port map (clk, rst, score, bcd0, bcd1, open, open, open);        
+    SEG1_I: bcd_to_7seg
+        port map (bcd1, digit1);        
+    SEG2_I: bcd_to_7seg
+        port map (bcd0, digit0);
     
     clock_div: process(clk_50MHz, rst) is -- replace with pll
     begin
@@ -248,6 +275,28 @@ begin
         end if;
     end process;
     
+    update_score: process(clk, rst) is
+    begin
+        if rst='1' then
+            score <= 0;
+        elsif rising_edge(clk) then
+            if s_curr=s_coll_check and hit='1' and first(0)='0' then
+                score <= score + 1;
+            end if;
+        end if;
+    end process;
+    
+    update_lives: process(clk, rst) is
+    begin
+        if rst='1' then
+            lives <= 3;
+        elsif rising_edge(clk) then
+            if s_curr=s_coll_check and hit='1' and first(0)='1' then
+                lives <= lives - 1;
+            end if;
+        end if;
+    end process;
+    
     add    <= '1' when s_curr=s_add_elem and generated_take='1' else '0';
     delete <= '1' when s_curr=s_coll_check and (hit='1' or miss='1') else '0';
     move   <= '1' when s_curr=s_move else '0';
@@ -260,5 +309,7 @@ begin
     g_out <= vga_g(7 downto 4);
     b_out <= vga_b(7 downto 4);
     
-    lives_leds <= generated_info(2 downto 0);
+    lives_leds(0) <= '1' when lives > 0 else '0';
+    lives_leds(1) <= '1' when lives > 1 else '0';
+    lives_leds(2) <= '1' when lives > 2 else '0';
 end architecture;

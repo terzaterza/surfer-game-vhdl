@@ -92,7 +92,7 @@ begin
     if rst='1' then
         lookup <= 0;
     elsif rising_edge(clk) then
-        if xp >= disp_width_range'high-1 or lookup >= size then
+        if size=0 or xp >= disp_width_range'high-1 or lookup >= size then
             lookup <= 0;
         elsif xp >= bomb_pos + object_dim then
             lookup <= lookup + 1;
