@@ -9,6 +9,7 @@ entity display_controller is
 port (
 	clk         : in std_logic;
 	rst         : in std_logic;
+    ref_tick    : in std_logic;
     lane        : in lane_range;
     xp          : in disp_width_range;
 	yp          : in disp_height_range;
@@ -45,6 +46,7 @@ architecture behavioral of display_controller is
     type edge_array is array (0 to 2) of disp_height_range;
     constant top_edges : edge_array := (120, 240, 360);
     
+    signal mem_size : q_size_range;
     signal lookup : natural range 0 to q_size_range'high - 1;
     signal current_bomb : bomb_info;
     
@@ -61,7 +63,7 @@ SURFER_ROM_I: surfer_rom port map (rom_addr_vec, clk, surfer_data);
 COIN_ROM_I  : coin_rom   port map (rom_addr_vec, clk, coin_data);
 BOMB_ROM_I  : bomb_rom   port map (rom_addr_vec, clk, bomb_data);
 
-draw: process(lane, xp, yp, size, bomb_pos, bomb_lane, current_bomb) is
+draw: process(lane, xp, yp, mem_size, bomb_pos, bomb_lane, current_bomb) is
 variable x, y : std_logic_vector(5 downto 0); -- assuming same dim for surfer and object
 begin
     rom_select <= 3;
@@ -72,7 +74,7 @@ begin
         x := std_logic_vector(to_unsigned(xp - c_indent, 6));
         y := std_logic_vector(to_unsigned(yp - top_edges(lane), 6));
         rom_addr_vec <= (("0" & y & "00000") + ("00" & y & "0000")) + x;
-    elsif size > 0 then
+    elsif mem_size > 0 then
         if (xp >= bomb_pos and xp < bomb_pos + object_dim) and
            (yp >= top_edges(bomb_lane) and yp < top_edges(bomb_lane) + object_dim) then
             x := std_logic_vector(to_unsigned(xp - bomb_pos, 6));
@@ -92,10 +94,21 @@ begin
     if rst='1' then
         lookup <= 0;
     elsif rising_edge(clk) then
-        if size=0 or xp >= disp_width_range'high-1 or lookup >= size then
+        if mem_size=0 or xp >= disp_width_range'high-1 or lookup >= mem_size then
             lookup <= 0;
         elsif xp >= bomb_pos + object_dim then
             lookup <= lookup + 1;
+        end if;
+    end if;
+end process;
+
+update_size: process(clk, rst) is
+begin
+    if rst='1' then
+        mem_size<=0;
+    elsif rising_edge(clk) then
+        if ref_tick='1' then
+            mem_size <= size;
         end if;
     end if;
 end process;

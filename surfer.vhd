@@ -93,6 +93,7 @@ architecture structural of surfer is
     component display_controller is
         port (
             clk, rst    : in std_logic;
+            ref_tick    : in std_logic;
             lane        : in lane_range;
             xp          : in disp_width_range;
             yp          : in disp_height_range;
@@ -202,7 +203,7 @@ begin
     COLLISION_CONTROLLER_I: collision_controller
         port map (lane, size, first, hit, miss);
     DISPLAY_CONTROLLER_I: display_controller
-        port map (clk, rst, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color); -- change this    
+        port map (clk, rst, ref_tick, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color); -- change this    
     VGA_SYNC_I: vga_sync
         generic map ( 96, 48, 16, 640, 2, 33, 10, 480)
         port map (
