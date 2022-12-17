@@ -132,10 +132,15 @@ architecture structural of surfer is
     end component;
     
     component bin_to_bcd is
-        port(
-            clk, reset : in std_logic;
-            num_in     : in natural range 0 to 99;
-            bcd0, bcd1, bcd2, bcd3, bcd4: out std_logic_vector(3 downto 0)
+        generic (
+            G_N : natural := 8;
+            G_D : natural := 3
+        );
+        port (
+            clk       : in std_logic;
+            reset     : in std_logic;
+            num_in    : in natural range 0 to (10 ** G_D) - 1;
+            bcd_out   : out std_logic_vector(G_D*4 - 1 downto 0)
         );
     end component;
     
@@ -175,7 +180,7 @@ architecture structural of surfer is
     signal hit, miss   : std_logic;
     
     signal score       : natural range 0 to 99;
-    signal bcd1, bcd0  : std_logic_vector(3 downto 0);
+    signal bcd_out     : std_logic_vector(11 downto 0);
     
     signal lives       : natural range 0 to 3;
     
@@ -211,11 +216,11 @@ begin
         disp_color(23 downto 16), disp_color(15 downto 8), disp_color(7 downto 0),
         vga_r, vga_g, vga_b, ref_tick);    
     BIN_TO_BCD_I: bin_to_bcd
-        port map (clk, rst, score, bcd0, bcd1, open, open, open);        
+        port map (clk, rst, score, bcd_out);        
     SEG1_I: bcd_to_7seg
-        port map (bcd1, digit1);        
+        port map (bcd_out(7 downto 4), digit1);        
     SEG2_I: bcd_to_7seg
-        port map (bcd0, digit0);
+        port map (bcd_out(3 downto 0), digit0);
     
     clock_div: process(clk_50MHz, rst) is -- replace with pll
     begin
@@ -229,9 +234,7 @@ begin
     update_next: process(s_curr, ref_tick, s_copy_count, size, delete) is
     begin
         case s_curr is
-            when s_coll_check =>
-                if delete='1' then s_next <= s_inc_speed;
-                else s_next <= s_add_elem; end if;
+            when s_coll_check => s_next <= s_add_elem;
             when s_add_elem   => s_next <= s_inc_speed;
             when s_inc_speed  => s_next <= s_move;
             when s_move       => s_next <= s_wait_ref;

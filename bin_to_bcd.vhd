@@ -1,93 +1,129 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
- 
+
 entity bin_to_bcd is
-    port(
-        clk, reset : in std_logic;
-        num_in     : in natural range 0 to 99;
-        bcd0, bcd1, bcd2, bcd3, bcd4: out std_logic_vector(3 downto 0)
-    );
+	generic (
+		G_N : natural := 8;
+		G_D : natural := 3
+	);
+	port (
+		clk       : in std_logic;
+		reset     : in std_logic;
+		num_in    : in natural range 0 to (10 ** G_D) - 1;
+		bcd_out   : out std_logic_vector(G_D*4 - 1 downto 0)
+	);
 end bin_to_bcd;
- 
-architecture behaviour of bin_to_bcd is
-    constant N : natural := 8;
-    
-    type states is (start, shift, done);
-    signal state, state_next: states;
- 
-    signal binary_in : std_logic_vector(N-1 downto 0);
-    signal binary, binary_next: std_logic_vector(N-1 downto 0);
-    signal bcds, bcds_reg, bcds_next: std_logic_vector(19 downto 0);
-    signal bcds_out_reg, bcds_out_reg_next: std_logic_vector(19 downto 0);
-    signal shift_counter, shift_counter_next: natural range 0 to N;
+
+architecture Behavioral of bin_to_bcd is
+	type State_t is (stIdle, stShift, stCorrection);
+	signal state_reg, next_state : State_t;
+	
+    signal bin_in    : std_logic_vector(G_N - 1 downto 0);
+	signal bin_in_reg : std_logic_vector(bin_in'length - 1 downto 0);
+	signal shift_cnt : integer range 0 to bin_in'length - 1;
+	
+	signal shift_reg : std_logic_vector(bin_in'length + bcd_out'length - 1 downto 0);
 begin
 
-    binary_in <= std_logic_vector(to_unsigned(num_in, N));
- 
-    process(clk, reset)
-    begin
-        if reset = '1' then
-            binary <= (others => '0');
-            bcds <= (others => '0');
-            state <= start;
-            bcds_out_reg <= (others => '0');
-            shift_counter <= 0;
-        elsif rising_edge(clk) then
-            binary <= binary_next;
-            bcds <= bcds_next;
-            state <= state_next;
-            bcds_out_reg <= bcds_out_reg_next;
-            shift_counter <= shift_counter_next;
-        end if;
-    end process;
- 
-    convert:
-    process(state, binary, binary_in, bcds, bcds_reg, shift_counter)
-    begin
-        state_next <= state;
-        bcds_next <= bcds;
-        binary_next <= binary;
-        shift_counter_next <= shift_counter;
- 
-        case state is
-            when start =>
-                state_next <= shift;
-                binary_next <= binary_in;
-                bcds_next <= (others => '0');
-                shift_counter_next <= 0;
-            when shift =>
-                if shift_counter = N then
-                    state_next <= done;
-                else
-                    binary_next <= binary(N-2 downto 0) & 'L';
-                    bcds_next <= bcds_reg(18 downto 0) & binary(N-1);
-                    shift_counter_next <= shift_counter + 1;
-                end if;
-            when done =>
-                state_next <= start;
-        end case;
-    end process;
- 
-    bcds_reg(19 downto 16) <= bcds(19 downto 16) + 3 when bcds(19 downto 16) > 4 else
-                              bcds(19 downto 16);
-    bcds_reg(15 downto 12) <= bcds(15 downto 12) + 3 when bcds(15 downto 12) > 4 else
-                              bcds(15 downto 12);
-    bcds_reg(11 downto 8) <= bcds(11 downto 8) + 3 when bcds(11 downto 8) > 4 else
-                             bcds(11 downto 8);
-    bcds_reg(7 downto 4) <= bcds(7 downto 4) + 3 when bcds(7 downto 4) > 4 else
-                            bcds(7 downto 4);
-    bcds_reg(3 downto 0) <= bcds(3 downto 0) + 3 when bcds(3 downto 0) > 4 else
-                            bcds(3 downto 0);
- 
-    bcds_out_reg_next <= bcds when state = done else
-                         bcds_out_reg;
- 
-    bcd4 <= bcds_out_reg(19 downto 16);
-    bcd3 <= bcds_out_reg(15 downto 12);
-    bcd2 <= bcds_out_reg(11 downto 8);
-    bcd1 <= bcds_out_reg(7 downto 4);
-    bcd0 <= bcds_out_reg(3 downto 0);
- 
-end behaviour;
+    bin_in <= std_logic_vector(to_unsigned(num_in, G_N));
+
+	STATE_TRANSITION: process (clk) is
+	begin
+		if rising_edge(clk) then
+			if reset = '1' then
+				state_reg <= stIdle;
+			else
+				state_reg <= next_state;
+			end if;		
+		end if;	
+	end process STATE_TRANSITION;
+	
+	NEXT_STATE_LOGIC: process (state_reg, bin_in, bin_in_reg, shift_cnt) is
+	begin
+		case state_reg is
+			when stIdle =>
+				if (bin_in /= bin_in_reg) then
+					next_state <= stShift;
+				else
+					next_state <= stIdle;
+				end if;
+			when stShift =>
+				if shift_cnt = 0 then
+					next_state <= stIdle;
+				else
+					next_state <= stCorrection;
+				end if;
+			when stCorrection =>
+				next_state <= stShift;
+		end case;	
+	end process NEXT_STATE_LOGIC;
+	
+	BIN_IN_SAVE: process (clk) is
+	begin
+		if rising_edge(clk) then
+			if reset = '1' then
+				bin_in_reg <= (others => '0');
+			else
+				bin_in_reg <= bin_in;
+			end if;
+		end if;
+	end process BIN_IN_SAVE;
+	
+	
+	CNT_PROCESS: process (clk) is
+	begin
+		if rising_edge(clk) then
+			if reset = '1' then
+				shift_cnt <= G_N - 1;
+			else
+				if state_reg = stIdle or next_state = stIdle then
+					shift_cnt <= G_N - 1;				
+				elsif state_reg = stShift then
+					shift_cnt <= shift_cnt - 1;
+				end if;
+			end if;		
+		end if;	
+	end process CNT_PROCESS;
+	
+	SHIFT_REG_PROC: process (clk) is
+	begin
+		if rising_edge(clk) then
+			if reset = '1' then
+				shift_reg <= (others => '0');
+			else
+				case state_reg is
+					when stIdle =>
+						if next_state = stShift then
+							shift_reg(bin_in'length - 1 downto 0) <= bin_in;
+							shift_reg(shift_reg'length -1 downto bin_in'length) <= (others => '0');
+						end if;
+					when stShift =>
+						shift_reg <= shift_reg(shift_reg'length - 2 downto 0) & '0';
+					when stCorrection =>
+						L_CORRECTION: for iD in 0 to G_D - 1 loop
+							if unsigned(shift_reg(shift_reg'length - 1 - iD*4 downto shift_reg'length - 4 - iD*4)) > 4 then
+								shift_reg(shift_reg'length - 1 - iD*4 downto shift_reg'length - 4 - iD*4) <=
+									std_logic_vector(unsigned(shift_reg(shift_reg'length - 1 - iD*4 downto shift_reg'length - 4 - iD*4)) + 3);
+							end if;
+						end loop L_CORRECTION;						
+				end case;
+			end if;
+		end if;	
+	end process SHIFT_REG_PROC;
+	
+	OUTPUT_PROCESS: process (clk) is
+	begin
+		if rising_edge(clk) then
+			if reset = '1' then
+				bcd_out <= (others => '0');
+			else
+				if state_reg = stIdle then
+					bcd_out <= shift_reg(shift_reg'length - 1 downto bin_in'length);
+				end if;
+			end if;		
+		end if;
+	end process OUTPUT_PROCESS;
+	
+
+end Behavioral;
