@@ -106,7 +106,7 @@ begin
                 core_w_data <= "00" & new_pos & core_r_data(2 downto 0);
                 core_w_en <= '1';
             end if;
-            if burst_state='0' and add='1' then
+            if burst_state='0' and add='1' and queue_size < q_size_range'high then
                 core_w_addr <= std_logic_vector(to_unsigned(queue_head + queue_size, mem_addr'length));
                 core_w_data <= "00" & info;
                 core_w_en <= '1';

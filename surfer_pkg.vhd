@@ -18,7 +18,7 @@ package surfer_pkg is
     
     type game_states is (s_coll_check, s_add_elem, s_inc_speed, s_move, s_wait_ref, s_burst_cpy, s_wait_cpy);
     
-    constant DEBUG     : boolean := true;
+    constant DEBUG     : boolean := false;
     
     constant debug_vga_ref_tick : natural := 64;
     constant copy_wait_count : natural := 31;    
@@ -34,7 +34,7 @@ package surfer_pkg is
     constant alpha_color      : color := x"f000f0";
     
     constant spawn_pos             : natural := tern(DEBUG, c_indent + surfer_dim + 12, display_width-1);
-    constant spawn_count_min       : natural := tern(DEBUG, 10, 30); -- number of ref_ticks
+    constant spawn_count_min       : natural := tern(DEBUG, 10, 90); -- number of ref_ticks
     constant spawn_count_range_len : natural := 150;
     subtype  spawn_count_range is natural range spawn_count_min to spawn_count_min + spawn_count_range_len;
     

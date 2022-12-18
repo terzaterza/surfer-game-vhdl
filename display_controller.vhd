@@ -47,6 +47,7 @@ architecture behavioral of display_controller is
     constant top_edges : edge_array := (120, 240, 360);
     
     signal mem_size : q_size_range;
+    signal wait_read : natural range 0 to 3;
     signal lookup : natural range 0 to q_size_range'high - 1;
     signal current_bomb : bomb_info;
     
@@ -93,11 +94,17 @@ update_lookup: process(clk, rst) is
 begin
     if rst='1' then
         lookup <= 0;
+        wait_read <= 0;
     elsif rising_edge(clk) then
-        if mem_size=0 or xp >= disp_width_range'high-1 or lookup >= mem_size then
+        if xp=0 or lookup >= mem_size then
             lookup <= 0;
-        elsif xp >= bomb_pos + object_dim then
+            -- wait_read <= 0;
+        elsif xp >= bomb_pos + object_dim and wait_read=0 then
             lookup <= lookup + 1;
+            wait_read <= 3;
+        end if;
+        if wait_read > 0 then
+            wait_read <= wait_read - 1;
         end if;
     end if;
 end process;

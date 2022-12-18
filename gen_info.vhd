@@ -76,7 +76,7 @@ begin
     end process;
     
     with rand(4 downto 3) select
-        info <= std_logic_vector(to_unsigned(spawn_pos, 11)) & "10" & rand(2) when "11",
+        info <= std_logic_vector(to_unsigned(spawn_pos, 11)) & "10" & rand(1) when "11",
                 std_logic_vector(to_unsigned(spawn_pos, 11)) & rand(4 downto 2) when others;
     
     take <= count_end;
