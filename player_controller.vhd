@@ -1,5 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
+library work;
+use work.surfer_pkg.all;
 
 entity player_controller is
     port(
@@ -7,9 +9,7 @@ entity player_controller is
         rst     :   in std_logic;
         up      :   in std_logic;
         down    :   in std_logic;
-        lane    :   out natural range 0 to 2 -- 0-gornja traka, 1-srednja traka, 2-donja traka
-                        -- change to surfer_pkg.lane_range
-        
+        lane    :   out lane_range
     );
 end player_controller;
 

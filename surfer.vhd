@@ -9,14 +9,13 @@ entity surfer is
         rst       : in std_logic;
         up, down  : in std_logic;
         
-        digit1, digit0 : out std_logic_vector(6 downto 0); -- add 8 bit to (2 digit) 7seg converter
+        digit1, digit0 : out std_logic_vector(6 downto 0);
         lives_leds     : out std_logic_vector(2 downto 0);
         
-        -- vga outputs
         vga_clk : out std_logic;
         h_sync, v_sync  : out std_logic;
         sync_n, blank_n : out std_logic;
-        r_out, g_out, b_out : out std_logic_vector(3 downto 0)
+        r_out, g_out, b_out : out std_logic_vector(3 downto 0) -- change to 8 bit
     );
 end entity;
 
@@ -72,9 +71,7 @@ architecture structural of surfer is
             rst     :   in std_logic;
             up      :   in std_logic;
             down    :   in std_logic;
-            lane    :   out natural range 0 to 2 -- 0-gornja traka, 1-srednja traka, 2-donja traka
-                            -- change to surfer_pkg.lane_range
-            
+            lane    :   out lane_range
         );
     end component;
     
@@ -183,6 +180,7 @@ architecture structural of surfer is
     signal bcd_out     : std_logic_vector(11 downto 0);
     
     signal lives       : natural range 0 to 3;
+    signal game_over   : std_logic;
     
     signal xp : disp_width_range;
     signal yp : disp_height_range;
@@ -208,7 +206,7 @@ begin
     COLLISION_CONTROLLER_I: collision_controller
         port map (lane, size, first, hit, miss);
     DISPLAY_CONTROLLER_I: display_controller
-        port map (clk, rst, ref_tick, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color); -- change this    
+        port map (clk, rst, ref_tick, lane, xp, yp, size, disp_r_data, disp_r_addr, disp_color);
     VGA_SYNC_I: vga_sync
         generic map ( 96, 48, 16, 640, 2, 33, 10, 480)
         port map (
@@ -248,7 +246,7 @@ begin
         end case;
     end process;
     
-    count_cpy: process(clk, rst) is -- should maybe check burst_state from mem_cnt instead of having this counter
+    count_cpy: process(clk, rst) is
     begin
         if rst='1' then s_copy_count <= 0;
         elsif rising_edge(clk) then
@@ -271,7 +269,7 @@ begin
         if rst='1' then
             speed <= 1;
         elsif rising_edge(clk) then
-            if reset_speed='1' then
+            if reset_speed='1' or game_over='1' then
                 speed <= 1;
             elsif s_curr=s_inc_speed and speed < speed_range'high and (hit='1' and first(0)='0') then
                 speed <= speed + 1;
@@ -284,7 +282,9 @@ begin
         if rst='1' then
             score <= 0;
         elsif rising_edge(clk) then
-            if s_curr=s_coll_check and hit='1' and first(0)='0' then
+            if game_over='1' then
+                score <= 0;
+            elsif s_curr=s_coll_check and hit='1' and first(0)='0' then
                 score <= score + 1;
             end if;
         end if;
@@ -295,7 +295,9 @@ begin
         if rst='1' then
             lives <= 3;
         elsif rising_edge(clk) then
-            if s_curr=s_coll_check and hit='1' and first(0)='1' then
+            if game_over='1' then
+                lives <= 3;
+            elsif s_curr=s_coll_check and hit='1' and first(0)='1' then
                 lives <= lives - 1;
             end if;
         end if;
@@ -307,6 +309,7 @@ begin
     copy   <= '1' when s_curr=s_burst_cpy else'0';
     
     reset_speed <= '1' when hit='1' and first(0)='1' else '0';
+    game_over   <= '1' when lives=0 else '0';
     
     vga_clk <= clk;
     r_out <= vga_r(7 downto 4);
