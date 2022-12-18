@@ -36,7 +36,7 @@ package surfer_pkg is
     constant spawn_pos             : natural := tern(DEBUG, c_indent + surfer_dim + 12, display_width-1);
     constant spawn_count_min       : natural := tern(DEBUG, 10, 90); -- number of ref_ticks
     constant spawn_count_range_len : natural := 150;
-    subtype  spawn_count_range is natural range spawn_count_min to spawn_count_min + spawn_count_range_len;
+    subtype  spawn_count_range is natural range 0 to spawn_count_min + spawn_count_range_len;
     
     subtype disp_width_range is natural range 0 to display_width - 1;
     subtype disp_height_range is natural range 0 to display_height - 1;

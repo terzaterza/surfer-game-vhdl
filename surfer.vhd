@@ -24,6 +24,7 @@ architecture structural of surfer is
         port (
             clk, rst : in std_logic;
             count_en : in std_logic;
+            speed    : in speed_range;
             
             take : out std_logic;
             info : out bomb_info
@@ -192,7 +193,7 @@ begin
     DISP_MEM_I: mem
         port map (clk, disp_w_data, disp_r_addr, disp_w_addr, disp_w_en, disp_r_data);    
     GEN_INFO_I: gen_info
-        port map(clk, rst, ref_tick, generated_take, generated_info);    
+        port map(clk, rst, ref_tick, speed, generated_take, generated_info);    
     MEM_CONTROLLER_I: mem_cnt
         port map (
             clk, rst,
