@@ -42,9 +42,6 @@ architecture behavioral of display_controller is
             q		: OUT STD_LOGIC_VECTOR (11 DOWNTO 0)
         );
     END component;
-
-    type edge_array is array (0 to 2) of disp_height_range;
-    constant top_edges : edge_array := (120, 240, 360);
     
     signal mem_size : q_size_range;
     signal wait_read : natural range 0 to 3;

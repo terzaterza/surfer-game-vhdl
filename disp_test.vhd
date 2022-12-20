@@ -8,14 +8,20 @@ entity disp_test is
     port (
         clk_50MHz, rst : in std_logic;
         
-        digit1, digit0 : out std_logic_vector(6 downto 0);
-        
-        -- vga outputs
+        vga_clk : out std_logic;
         h_sync, v_sync  : out std_logic;
-        r_out, g_out, b_out : out std_logic_vector(3 downto 0)
+        r_out, g_out, b_out : out std_logic_vector(7 downto 0)
     );
 end entity;
 architecture rtl of disp_test is
+
+    component pll is
+        port (
+            refclk   : in  std_logic := '0'; --  refclk.clk
+            rst      : in  std_logic := '0'; --   reset.reset
+            outclk_0 : out std_logic         -- outclk0.clk
+        );
+    end component;
 
     component display_controller is
         port (
@@ -58,27 +64,7 @@ architecture rtl of disp_test is
             ref_tick : out std_logic
         );
     end component;
-    
-    component bin_to_bcd is
-        generic (
-            G_N : natural := 8;
-            G_D : natural := 3
-        );
-        port (
-            clk       : in std_logic;
-            reset     : in std_logic;
-            num_in    : in natural range 0 to (10 ** G_D) - 1;
-            bcd_out   : out std_logic_vector(G_D*4 - 1 downto 0)
-        );
-    end component;
-    
-    component bcd_to_7seg is
-        port (
-            digit   : in  std_logic_vector(3 downto 0);
-            display : out std_logic_vector(6 downto 0)
-        );
-    end component;
-    
+        
     signal ref_tick : std_logic;
     signal clk      : std_logic;
     
@@ -89,13 +75,10 @@ architecture rtl of disp_test is
     signal xp : disp_width_range;
     signal yp : disp_height_range;
     signal disp_color : color;
-    signal vga_r, vga_g, vga_b : std_logic_vector(7 downto 0);
-    
-    signal bcd_out : std_logic_vector(11 downto 0);
     
     type test_mem is array (0 to 15) of std_logic_vector(15 downto 0);
     constant const_mem : test_mem := (
-        x"0705", x"0900", x"0b02", x"0000",
+        x"0705", x"0f00", x"1202", x"0000",
         x"0000", x"0000", x"0000", x"0000",
         x"0000", x"0000", x"0000", x"0000",
         x"0000", x"0000", x"0000", x"0000"
@@ -103,14 +86,8 @@ architecture rtl of disp_test is
 
 begin
 
-    clk_process: process(clk_50MHz, rst) is
-    begin
-        if rst='1' then
-            clk <= '0';
-        elsif rising_edge(clk_50MHz) then
-            clk <= not clk;
-        end if;
-    end process;
+    PLL_I: pll
+        port map(clk_50MHz, rst, clk);
     
     read_process: process(clk, rst) is
     begin
@@ -126,21 +103,11 @@ begin
     DISPLAY_CONTROLLER_I: display_controller
         port map (clk, rst, ref_tick, 2, xp, yp, 3, disp_r_data, disp_r_addr, disp_color);
     VGA_SYNC_I: vga_sync
-        generic map ( 96, 48, 16, 640, 2, 33, 10, 480)
         port map (
         clk, rst, h_sync, v_sync, open, open, xp, yp,
         disp_color(23 downto 16), disp_color(15 downto 8), disp_color(7 downto 0),
-        vga_r, vga_g, vga_b, ref_tick);
+        r_out, g_out, b_out, ref_tick);
         
-    r_out <= vga_r(7 downto 4);
-    g_out <= vga_g(7 downto 4);
-    b_out <= vga_b(7 downto 4);
-    
-    BIN_TO_BCD_I: bin_to_bcd
-        port map (clk, rst, 12, bcd_out);        
-    SEG1_I: bcd_to_7seg
-        port map (bcd_out(7 downto 4), digit1);        
-    SEG2_I: bcd_to_7seg
-        port map (bcd_out(3 downto 0), digit0);
-
+    vga_clk <= clk;
+        
 end architecture;

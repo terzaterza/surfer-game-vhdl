@@ -27,8 +27,14 @@ package surfer_pkg is
     constant object_dim : natural := 48;
     constant c_indent : natural := 10;
     
-    constant display_width : natural := 640;
-    constant display_height : natural := 480;
+    constant display_width : natural := 1024;
+    constant display_height : natural := 768;
+    
+    subtype disp_width_range is natural range 0 to display_width - 1;
+    subtype disp_height_range is natural range 0 to display_height - 1;
+    
+    type edge_array is array (0 to 2) of disp_height_range;
+    constant top_edges : edge_array := (200, 400, 600);
     
     constant background_color : color := x"007777";
     constant alpha_color      : color := x"f000f0";
@@ -37,8 +43,5 @@ package surfer_pkg is
     constant spawn_count_min       : natural := tern(DEBUG, 10, 90); -- number of ref_ticks
     constant spawn_count_range_len : natural := 150;
     subtype  spawn_count_range is natural range 0 to spawn_count_min + spawn_count_range_len;
-    
-    subtype disp_width_range is natural range 0 to display_width - 1;
-    subtype disp_height_range is natural range 0 to display_height - 1;
         
 end package surfer_pkg;

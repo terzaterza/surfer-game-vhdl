@@ -43,8 +43,6 @@ signal rand : std_logic_vector(7 downto 0);
 signal count_to : spawn_count_range;
 signal count_end : std_logic;
 
-constant seed : std_logic_vector(7 downto 0) := x"00";
-
 begin
     LFSR_I : lfsr
         port map (
