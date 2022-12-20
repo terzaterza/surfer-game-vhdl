@@ -1,0 +1,13 @@
+{signal: [
+  {name: 'clk', 		wave: 'p.....|.......|'},
+  {name: 'add',			wave: '0.10..|.......|'},
+  {name: 'delete',		wave: '0.....|..10...|'},
+  {name: 'size', 		wave: '=..=..|=..=...|', data: ['n', 'n+1', 'n', 'n-1']},
+  {name: 'head', 		wave: '=.....|=..=...|', data: ['m', 'm', 'm+1']},
+  {name: 'first', 		wave: '=.....|=....=.|', data: ['data[m]', 'data[m]', 'dat[m+1]']},
+  {name: 'core_w_en',	wave: '0..10.|.......|'},
+  {name: 'core_w_addr', wave: 'x..=x.|.......|', data: ['m+n']},
+  {name: 'core_w_data', wave: 'x..=x.|.......|', data: ['info']},
+  {name: 'core_r_addr', wave: '=.....|=..=...|', data: ['m', 'm', 'm+1']},
+  {name: 'core_r_data', wave: '=.....|=...=..|', data: ['data[m]', 'data[m]', 'data[m+1]']},
+]}

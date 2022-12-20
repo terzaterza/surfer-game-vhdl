@@ -1,0 +1,8 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity disp_test is
+    port (
+        clk_50, rst : in std_logic;
+    );
+end entity;

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="surfer">
+		<CBX_INST_ENTRY INSTANCE_NAME="|surfer|mem:DISP_MEM_I|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_9ho3.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|surfer|display_controller:DISPLAY_CONTROLLER_I|bomb_rom:BOMB_ROM_I|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_dbs3.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|surfer|display_controller:DISPLAY_CONTROLLER_I|coin_rom:COIN_ROM_I|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_mbs3.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|surfer|display_controller:DISPLAY_CONTROLLER_I|surfer_rom:SURFER_ROM_I|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_4js3.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|surfer|mem:CORE_MEM_I|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_9ho3.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

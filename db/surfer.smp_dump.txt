@@ -1,0 +1,32 @@
+
+State Machine - |surfer|s_curr
+Name s_curr.s_wait_cpy s_curr.s_burst_cpy s_curr.s_wait_ref s_curr.s_move s_curr.s_inc_speed s_curr.s_add_elem s_curr.s_coll_check 
+s_curr.s_coll_check 0 0 0 0 0 0 0 
+s_curr.s_add_elem 0 0 0 0 0 1 1 
+s_curr.s_inc_speed 0 0 0 0 1 0 1 
+s_curr.s_move 0 0 0 1 0 0 1 
+s_curr.s_wait_ref 0 0 1 0 0 0 1 
+s_curr.s_burst_cpy 0 1 0 0 0 0 1 
+s_curr.s_wait_cpy 1 0 0 0 0 0 1 
+
+State Machine - |surfer|bin_to_bcd:BIN_TO_BCD_I|state_reg
+Name state_reg.stCorrection state_reg.stShift state_reg.stIdle 
+state_reg.stIdle 0 0 0 
+state_reg.stShift 0 1 1 
+state_reg.stCorrection 1 0 1 
+
+State Machine - |surfer|player_controller:PLAYER_CONTROLLER_I|debouncer:D1|s_curr
+Name s_curr.s4 s_curr.s3 s_curr.s2 s_curr.s1 s_curr.s0 
+s_curr.s0 0 0 0 0 0 
+s_curr.s1 0 0 0 1 1 
+s_curr.s2 0 0 1 0 1 
+s_curr.s3 0 1 0 0 1 
+s_curr.s4 1 0 0 0 1 
+
+State Machine - |surfer|player_controller:PLAYER_CONTROLLER_I|debouncer:D0|s_curr
+Name s_curr.s4 s_curr.s3 s_curr.s2 s_curr.s1 s_curr.s0 
+s_curr.s0 0 0 0 0 0 
+s_curr.s1 0 0 0 1 1 
+s_curr.s2 0 0 1 0 1 
+s_curr.s3 0 1 0 0 1 
+s_curr.s4 1 0 0 0 1 

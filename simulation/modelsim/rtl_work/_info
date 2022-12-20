@@ -1,0 +1,863 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/coursework/upv/projekat/simulation/modelsim
+Ebcd_to_7seg
+Z1 w1671221182
+Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z4 8D:/coursework/upv/projekat/bcd_to_7seg.vhd
+Z5 FD:/coursework/upv/projekat/bcd_to_7seg.vhd
+l0
+L4
+V?0^F6h6_WkemZARSlnSRm1
+!s100 ;QA`c:bfU7gmG7MV21CO`1
+Z6 OV;C;10.5b;63
+31
+Z7 !s110 1671277527
+!i10b 1
+Z8 !s108 1671277527.000000
+Z9 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/bcd_to_7seg.vhd|
+Z10 !s107 D:/coursework/upv/projekat/bcd_to_7seg.vhd|
+!i113 1
+Z11 o-93 -work work
+Z12 tExplicit 1 CvgOpt 0
+Abehavioral
+R2
+R3
+DEx4 work 11 bcd_to_7seg 0 22 ?0^F6h6_WkemZARSlnSRm1
+l13
+L12
+V1XXbaQG:N5hSo3^mMGM5Y2
+!s100 EFKQi=3:nE7[DhBW]B74c1
+R6
+31
+R7
+!i10b 1
+R8
+R9
+R10
+!i113 1
+R11
+R12
+Ebin_to_bcd
+Z13 w1671271047
+Z14 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+R2
+R3
+R0
+Z15 8D:/coursework/upv/projekat/bin_to_bcd.vhd
+Z16 FD:/coursework/upv/projekat/bin_to_bcd.vhd
+l0
+L5
+V<kWk5VClST02K2bjc0n:C0
+!s100 <z8ENM2zUgK>0aJ4PW5<10
+R6
+31
+R7
+!i10b 1
+R8
+Z17 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/bin_to_bcd.vhd|
+Z18 !s107 D:/coursework/upv/projekat/bin_to_bcd.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R14
+R2
+R3
+DEx4 work 10 bin_to_bcd 0 22 <kWk5VClST02K2bjc0n:C0
+l27
+L18
+V2fd5BN;kGeTTJQ56zU7I`0
+!s100 TDf^`hL4CkVKnUD3[9JfG0
+R6
+31
+R7
+!i10b 1
+R8
+R17
+R18
+!i113 1
+R11
+R12
+Ebomb_rom
+Z19 w1670752677
+Z20 DPx9 altera_mf 20 altera_mf_components 0 22 gV:l9C^?PSb6]b5V?_jR@3
+R2
+R3
+R0
+Z21 8D:/coursework/upv/projekat/bomb_rom.vhd
+Z22 FD:/coursework/upv/projekat/bomb_rom.vhd
+l0
+L42
+VXP=lmJBme=UeN8]fL9;z?0
+!s100 WKKm6ZgTQ8I5L4cJR@i>:0
+R6
+31
+R7
+!i10b 1
+R8
+Z23 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/bomb_rom.vhd|
+Z24 !s107 D:/coursework/upv/projekat/bomb_rom.vhd|
+!i113 1
+R11
+R12
+Asyn
+R20
+R2
+R3
+DEx4 work 8 bomb_rom 0 22 XP=lmJBme=UeN8]fL9;z?0
+l56
+L52
+VAnae63IU`0>5RYH5Slb912
+!s100 Qm5_oX0h7J[TWZmDlG=KM1
+R6
+31
+R7
+!i10b 1
+R8
+R23
+R24
+!i113 1
+R11
+R12
+Ecoin_rom
+Z25 w1670752653
+R20
+R2
+R3
+R0
+Z26 8D:/coursework/upv/projekat/coin_rom.vhd
+Z27 FD:/coursework/upv/projekat/coin_rom.vhd
+l0
+L42
+V_f[GD6[<fSgG<Y8]>J>ko3
+!s100 jbTU?UeYzjZgFKhLCgCP32
+R6
+31
+R7
+!i10b 1
+R8
+Z28 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/coin_rom.vhd|
+Z29 !s107 D:/coursework/upv/projekat/coin_rom.vhd|
+!i113 1
+R11
+R12
+Asyn
+R20
+R2
+R3
+DEx4 work 8 coin_rom 0 22 _f[GD6[<fSgG<Y8]>J>ko3
+l56
+L52
+VGF`Vc=ealD1i[GP7nGN7R3
+!s100 JNH;60z[C_XT<7?:i:IEd0
+R6
+31
+R7
+!i10b 1
+R8
+R28
+R29
+!i113 1
+R11
+R12
+Ecollision_controller
+Z30 w1670864552
+Z31 DPx4 work 8 tern_pkg 0 22 VkST`blEbQzXbS`kAn5AY2
+Z32 DPx4 work 10 surfer_pkg 0 22 9S><VFE7B;SU441bkz`W83
+R14
+R2
+R3
+R0
+Z33 8D:/coursework/upv/projekat/collision_controller.vhd
+Z34 FD:/coursework/upv/projekat/collision_controller.vhd
+l0
+L7
+V:d3Q@UGLgM<lDL[64bNk11
+!s100 2<H30CJ5^nThZEZ73QCNm2
+R6
+31
+R7
+!i10b 1
+R8
+Z35 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/collision_controller.vhd|
+Z36 !s107 D:/coursework/upv/projekat/collision_controller.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R31
+R32
+R14
+R2
+R3
+DEx4 work 20 collision_controller 0 22 :d3Q@UGLgM<lDL[64bNk11
+l25
+L19
+V[cUJUXQ_QU<:]CeTWSCQ:2
+!s100 Y`97Ei65:US[>2zM`U7ml0
+R6
+31
+R7
+!i10b 1
+R8
+R35
+R36
+!i113 1
+R11
+R12
+Ecounter
+Z37 w1670668065
+R14
+R2
+R3
+R0
+Z38 8D:/coursework/upv/projekat/counter.vhd
+Z39 FD:/coursework/upv/projekat/counter.vhd
+l0
+L5
+VzXRzSc9F3@61oe9D=iIlO1
+!s100 nF0?QLb^fZHSU:IL0`Q;e2
+R6
+31
+R7
+!i10b 1
+R8
+Z40 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/counter.vhd|
+Z41 !s107 D:/coursework/upv/projekat/counter.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R14
+R2
+R3
+DEx4 work 7 counter 0 22 zXRzSc9F3@61oe9D=iIlO1
+l28
+L23
+V@Y1k8C]>QCMmm6J5XnodV3
+!s100 EU`ohnVTJZOO[>2b7?df73
+R6
+31
+R7
+!i10b 1
+R8
+R40
+R41
+!i113 1
+R11
+R12
+Edebouncer
+Z42 w1668953279
+R2
+R3
+R0
+Z43 8D:/coursework/upv/projekat/debouncer.vhd
+Z44 FD:/coursework/upv/projekat/debouncer.vhd
+l0
+L4
+VYnQ19i9dabYDhnBJC594M1
+!s100 nE`0J?^N[N@]jJ0T;eXho3
+R6
+31
+Z45 !s110 1671277528
+!i10b 1
+R8
+Z46 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/debouncer.vhd|
+Z47 !s107 D:/coursework/upv/projekat/debouncer.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R2
+R3
+DEx4 work 9 debouncer 0 22 YnQ19i9dabYDhnBJC594M1
+l43
+L16
+VLOlOE>]^ZSYQXFa[M4oi=3
+!s100 N0Fo^l5nIS@W6[S^1>@P20
+R6
+31
+R45
+!i10b 1
+R8
+R46
+R47
+!i113 1
+R11
+R12
+Edisplay_controller
+Z48 w1671224004
+R31
+R32
+Z49 DPx4 ieee 15 std_logic_arith 0 22 [G314=:2zXJ`VORJe1J@Z1
+Z50 DPx4 ieee 18 std_logic_unsigned 0 22 ;eZjO2D4ZDz<]0>8AL<ne1
+R14
+R2
+R3
+R0
+Z51 8D:/coursework/upv/projekat/display_controller.vhd
+Z52 FD:/coursework/upv/projekat/display_controller.vhd
+l0
+L8
+V?NeM5Dn0>GL=Z922m[eA_2
+!s100 9@l:3=:AJ7[IVfdiGe^jf0
+R6
+31
+R45
+!i10b 1
+Z53 !s108 1671277528.000000
+Z54 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/display_controller.vhd|
+Z55 !s107 D:/coursework/upv/projekat/display_controller.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R31
+R32
+R49
+R50
+R14
+R2
+R3
+DEx4 work 18 display_controller 0 22 ?NeM5Dn0>GL=Z922m[eA_2
+l60
+L23
+V9N9=DTUN?So87WTj`jOU<3
+!s100 ejZfJI?Ii3>A<:KH_FfHb2
+R6
+31
+R45
+!i10b 1
+R53
+R54
+R55
+!i113 1
+R11
+R12
+Egen_info
+Z56 w1671277514
+R31
+R32
+R14
+R2
+R3
+R0
+Z57 8D:/coursework/upv/projekat/gen_info.vhd
+Z58 FD:/coursework/upv/projekat/gen_info.vhd
+l0
+L7
+V79d>XK0^4kzPY9ooVNZBW3
+!s100 GWNXGX54XnLKbo2Lo4;@a3
+R6
+31
+R45
+!i10b 1
+R53
+Z59 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/gen_info.vhd|
+Z60 !s107 D:/coursework/upv/projekat/gen_info.vhd|
+!i113 1
+R11
+R12
+Astructural
+R31
+R32
+R14
+R2
+R3
+DEx4 work 8 gen_info 0 22 79d>XK0^4kzPY9ooVNZBW3
+l47
+L16
+V`AzjQi6b5HSXEDzSONG@Z1
+!s100 c4m0>]DFP=G7o>:T3CVMD3
+R6
+31
+R45
+!i10b 1
+R53
+R59
+R60
+!i113 1
+R11
+R12
+Ehw_mult
+Z61 w1670860930
+R2
+R3
+R0
+Z62 8D:/coursework/upv/projekat/hw_mult.vhd
+Z63 FD:/coursework/upv/projekat/hw_mult.vhd
+l0
+L166
+Vf94i=_QTX5CD[NA_]z8oc3
+!s100 ;VImHZ3kKmRk3dl_SZaKX1
+R6
+31
+R45
+!i10b 1
+R53
+Z64 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/hw_mult.vhd|
+Z65 !s107 D:/coursework/upv/projekat/hw_mult.vhd|
+!i113 1
+R11
+R12
+Artl
+R2
+R3
+DEx4 work 7 hw_mult 0 22 f94i=_QTX5CD[NA_]z8oc3
+l190
+L176
+Vdhg?6JDmPaf1Qb`=7CaPN3
+!s100 KHScUeg1AalO`O73ihGY80
+R6
+31
+R45
+!i10b 1
+R53
+R64
+R65
+!i113 1
+R11
+R12
+Ehw_mult_altmemmult_odo
+R61
+R2
+R3
+R0
+R62
+R63
+l0
+L46
+V2;_KBTQM1@jB4@JgnQb5@2
+!s100 [6dGLYiNeO=Cm8hl_WnKL0
+R6
+31
+R45
+!i10b 1
+R53
+R64
+R65
+!i113 1
+R11
+R12
+Artl
+R2
+R3
+DEx4 work 22 hw_mult_altmemmult_odo 0 22 2;_KBTQM1@jB4@JgnQb5@2
+l139
+L56
+VZoWP?<LRf9G=ZUA`D99:J3
+!s100 UBof:gaBoIIn_dCJ><GlV1
+R6
+31
+R45
+!i10b 1
+R53
+R64
+R65
+!i113 1
+R11
+R12
+Elcg
+Z66 w1670867767
+R49
+R50
+R2
+R3
+R0
+Z67 8D:/coursework/upv/projekat/lcg.vhd
+Z68 FD:/coursework/upv/projekat/lcg.vhd
+l0
+L5
+VodHLZLAMA59CGbf=d5cOZ0
+!s100 1=2_obK8?RHQlAfmJmIo^3
+R6
+31
+R45
+!i10b 1
+R53
+Z69 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/lcg.vhd|
+Z70 !s107 D:/coursework/upv/projekat/lcg.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R49
+R50
+R2
+R3
+DEx4 work 3 lcg 0 22 odHLZLAMA59CGbf=d5cOZ0
+l27
+L12
+VNHF3G85ICj1nV5=]7NVn81
+!s100 =1@g[fQ1YhTB6Bd<z5gNc2
+R6
+31
+R45
+!i10b 1
+R53
+R69
+R70
+!i113 1
+R11
+R12
+Emem
+Z71 w1670450784
+R20
+R2
+R3
+R0
+Z72 8D:/coursework/upv/projekat/mem.vhd
+Z73 FD:/coursework/upv/projekat/mem.vhd
+l0
+L42
+V42eLRCDYT;PUJe4[CkdJg3
+!s100 h=<R4bV74O6W:EB18O>Z:0
+R6
+31
+R45
+!i10b 1
+R53
+Z74 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/mem.vhd|
+Z75 !s107 D:/coursework/upv/projekat/mem.vhd|
+!i113 1
+R11
+R12
+Asyn
+R20
+R2
+R3
+DEx4 work 3 mem 0 22 42eLRCDYT;PUJe4[CkdJg3
+l59
+L55
+VAm@hL>9^JoNh<=43`F]Gi3
+!s100 [O1::cJM]T>l2lkBXz[Lb3
+R6
+31
+R45
+!i10b 1
+R53
+R74
+R75
+!i113 1
+R11
+R12
+Emem_cnt
+Z76 w1671141233
+R31
+R32
+R14
+R2
+R3
+R0
+Z77 8D:/coursework/upv/projekat/mem_cnt.vhd
+Z78 FD:/coursework/upv/projekat/mem_cnt.vhd
+l0
+L7
+V8><;E1EdTIo?]Y[2C85BE1
+!s100 aTCo]zeZHJ>5O7mn6e5z50
+R6
+31
+Z79 !s110 1671277529
+!i10b 1
+Z80 !s108 1671277529.000000
+Z81 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/mem_cnt.vhd|
+Z82 !s107 D:/coursework/upv/projekat/mem_cnt.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R31
+R32
+R14
+R2
+R3
+DEx4 work 7 mem_cnt 0 22 8><;E1EdTIo?]Y[2C85BE1
+l37
+L30
+VgoFW[OXKPb1ZclQ`eTE;F0
+!s100 6<8nme@PW8NkXon3PmfTz1
+R6
+31
+R79
+!i10b 1
+R80
+R81
+R82
+!i113 1
+R11
+R12
+Eplayer_controller
+Z83 w1670773208
+R2
+R3
+R0
+Z84 8D:/coursework/upv/projekat/player_controller.vhd
+Z85 FD:/coursework/upv/projekat/player_controller.vhd
+l0
+L4
+V9d[XUNXO7G9j:BB]`o]k]3
+!s100 5fYcFk9@z@jUV[OnNdcZG3
+R6
+31
+R79
+!i10b 1
+R80
+Z86 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/player_controller.vhd|
+Z87 !s107 D:/coursework/upv/projekat/player_controller.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R2
+R3
+DEx4 work 17 player_controller 0 22 9d[XUNXO7G9j:BB]`o]k]3
+l34
+L16
+Vb7THD3e=EHU1BZB7kdLka2
+!s100 onbNOhHBl=NamC>F0>_;z1
+R6
+31
+R79
+!i10b 1
+R80
+R86
+R87
+!i113 1
+R11
+R12
+Esurfer
+Z88 w1671271361
+R31
+R32
+R2
+R3
+R0
+Z89 8D:/coursework/upv/projekat/surfer.vhd
+Z90 FD:/coursework/upv/projekat/surfer.vhd
+l0
+L6
+V7KbdF5UnE^HYgXGlU>WNd2
+!s100 jbO^nch_U3Id_ALRBTEC@3
+R6
+31
+R79
+!i10b 1
+R80
+Z91 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/surfer.vhd|
+Z92 !s107 D:/coursework/upv/projekat/surfer.vhd|
+!i113 1
+R11
+R12
+Astructural
+R31
+R32
+R2
+R3
+DEx4 work 6 surfer 0 22 7KbdF5UnE^HYgXGlU>WNd2
+l191
+L23
+VK3eYT`HBLQ@j4CAmAVSan1
+!s100 jl89Cel?bzDR8^=b9MX[70
+R6
+31
+R79
+!i10b 1
+R80
+R91
+R92
+!i113 1
+R11
+R12
+Psurfer_pkg
+R31
+R2
+R3
+w1671276385
+R0
+8D:/coursework/upv/projekat/surfer_pkg.vhd
+FD:/coursework/upv/projekat/surfer_pkg.vhd
+l0
+L6
+V9S><VFE7B;SU441bkz`W83
+!s100 J>_jDG1d2MLUBNWE2ccc50
+R6
+31
+R79
+!i10b 1
+R80
+!s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/surfer_pkg.vhd|
+!s107 D:/coursework/upv/projekat/surfer_pkg.vhd|
+!i113 1
+R11
+R12
+Esurfer_rom
+Z93 w1670752501
+R20
+R2
+R3
+R0
+Z94 8D:/coursework/upv/projekat/surfer_rom.vhd
+Z95 FD:/coursework/upv/projekat/surfer_rom.vhd
+l0
+L42
+VM1V9PAI?M]`YkBPTlU[g90
+!s100 5SQUeRHPFc`f9ULU``aD`1
+R6
+31
+R79
+!i10b 1
+R80
+Z96 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/surfer_rom.vhd|
+Z97 !s107 D:/coursework/upv/projekat/surfer_rom.vhd|
+!i113 1
+R11
+R12
+Asyn
+R20
+R2
+R3
+DEx4 work 10 surfer_rom 0 22 M1V9PAI?M]`YkBPTlU[g90
+l56
+L52
+V9II^]X^5[6RJ0lcB;dhBP0
+!s100 jRHmPW0Xa549Sg15ZRoDh3
+R6
+31
+R79
+!i10b 1
+R80
+R96
+R97
+!i113 1
+R11
+R12
+Esurfer_vhd_tst
+Z98 w1670792313
+R2
+R3
+R0
+Z99 8D:/coursework/upv/projekat/simulation/modelsim/surfer.vht
+Z100 FD:/coursework/upv/projekat/simulation/modelsim/surfer.vht
+l0
+L30
+ViZG4KRWbT1hT74_6Xl3ff1
+!s100 3gAhSMP^AQl<1j7YW[dL60
+R6
+32
+R79
+!i10b 1
+R80
+Z101 !s90 -reportprogress|300|-work|work|D:/coursework/upv/projekat/simulation/modelsim/surfer.vht|
+Z102 !s107 D:/coursework/upv/projekat/simulation/modelsim/surfer.vht|
+!i113 1
+Z103 o-work work
+R12
+Asurfer_arch
+R2
+R3
+DEx4 work 14 surfer_vhd_tst 0 22 iZG4KRWbT1hT74_6Xl3ff1
+l70
+L32
+Vo3EiAHY6K8kMLL0eV7iXF3
+!s100 K1:i=?3M]=kGR?Vn0OQIN0
+R6
+32
+R79
+!i10b 1
+R80
+R101
+R102
+!i113 1
+R103
+R12
+Ptern_pkg
+Z104 w1670791751
+R0
+Z105 8D:/coursework/upv/projekat/tern_pkg.vhd
+Z106 FD:/coursework/upv/projekat/tern_pkg.vhd
+l0
+L1
+VVkST`blEbQzXbS`kAn5AY2
+!s100 e7LUNNhV^Ig960S7QGkQc3
+R6
+31
+b1
+R79
+!i10b 1
+R80
+Z107 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/tern_pkg.vhd|
+Z108 !s107 D:/coursework/upv/projekat/tern_pkg.vhd|
+!i113 1
+R11
+R12
+Bbody
+R31
+l0
+L5
+VcTh1QFb6EY]WY57]fcGHB3
+!s100 HZk5RTV<[`JSL9^BQ]MhQ0
+R6
+31
+R79
+!i10b 1
+R80
+R107
+R108
+!i113 1
+R11
+R12
+Evga_sync
+Z109 w1671144648
+R31
+R32
+R14
+R2
+R3
+R0
+Z110 8D:/coursework/upv/projekat/vga_sync.vhd
+Z111 FD:/coursework/upv/projekat/vga_sync.vhd
+l0
+L7
+VhQU:Y?gi@4k6=iN[o6LY30
+!s100 V[moQ@QZ17_9Nil`h0[L10
+R6
+31
+Z112 !s110 1671277530
+!i10b 1
+Z113 !s108 1671277530.000000
+Z114 !s90 -reportprogress|300|-93|-work|work|D:/coursework/upv/projekat/vga_sync.vhd|
+Z115 !s107 D:/coursework/upv/projekat/vga_sync.vhd|
+!i113 1
+R11
+R12
+Abehavioral
+R31
+R32
+R14
+R2
+R3
+Z116 DEx4 work 8 vga_sync 0 22 hQU:Y?gi@4k6=iN[o6LY30
+l44
+L34
+Z117 VeJ`AjZ0BX17CIacPGj7kz0
+Z118 !s100 kAeGNPE`aa`n8LXEB<0n^0
+R6
+31
+R112
+!i10b 1
+R113
+R114
+R115
+!i113 1
+R11
+R12

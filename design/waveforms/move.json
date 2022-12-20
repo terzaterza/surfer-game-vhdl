@@ -1,0 +1,15 @@
+{signal: [
+  {name: 'clk', 		wave: 'p.......|.......|'},
+  {name: 'move',		wave: '010.....|.......|'},
+  {name: 'size', 		wave: '=.......|=......|', data: ['n', 'n']},
+  {name: 'head', 		wave: '=.......|=......|', data: ['m', 'm']},
+  {name: 'burst_state',	wave: '0.1.....|....0..|'},
+  {name: 'burst_count',	wave: 'x.======|====x..|', data: [0, 1, 2, 3, 4, '', 'n-4', 'n-3', 'n-2', 'n-1']},
+  {name: 'core_w_en',	wave: '0.1.....|....0..|'},
+  {name: 'core_r_addr', wave: '=.======|=======|', data: ['m', 'm+1', 'm+2', 'm+3', 'm+4', 'm+5', '', 'm+n-3', 'm+n-2', 'm+n-1', 'm+n']},
+  {name: 'core_r_data', wave: '=..=====|====x..|', data: ['data[m]', 'data[m+1]', 'data[m+2]', 'data[m+3]', 'data[m+4]', '', 'dat[m+n-4]', 'dat[m+n-3]', 'dat[m+n-2]', 'dat[m+n-1]']},
+  {name: 'core_w_addr', wave: 'x.======|====x..|', data: ['m', 'm+1', 'm+2', 'm+3', 'm+4', '', 'm+n-4', 'm+n-3', 'm+n-2', 'm+n-1']},
+  {name: 'core_w_data', wave: 'x.======|====x..|', data: ['dat[m]-s', 'dat[m+1]-s', 'dat[m+2]-s', 'dat[m+3]-s', 'dat[m+4]-s', '', 'd[m+n-4]-s', 'd[m+n-3]-s', 'd[m+n-2]-s', 'd[m+n-1]-s']},
+],
+  config: {hscale: 2}
+}

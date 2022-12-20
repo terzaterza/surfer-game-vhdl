@@ -1,0 +1,57 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity collision_controller is
+    port(
+        lane    :   in natural range 0 to 2;
+        size    :   in natural range 0 to 16;
+        first   :   in std_logic_vector(13 downto 0); --11 downto 3 - horizontalna pozicija
+                                                      --2  downto 1 - traka 
+                                                      -- 0 - 0-novcic,1-bomba
+        hit     :   out std_logic;
+        miss    :   out std_logic
+    );
+end collision_controller;
+architecture Behavioral of collision_controller is
+    constant SURFER_DIM : integer := 48; --mislim da je previse malo
+    constant OBJECT_DIM : integer := 36; -- dimenzija novcica i bombi
+    constant C_INDENT   : integer := 10; --koliko je surfer udaljen od leve ivice ekrana
+    
+    signal object_coll  : std_logic;
+    signal object_exit  : std_logic;
+   
+begin
+    
+hit_process :   process(first, lane, size) is
+    begin
+        if(size = 0) then
+            object_coll <= '0';
+        else
+            if(lane = to_integer(unsigned(first(2 downto 0))) and 
+            ((C_INDENT < to_integer(signed(first(11 downto 3))) and C_INDENT + SURFER_DIM > to_integer(signed(first(11 downto 3)))) or
+            (C_INDENT < OBJECT_DIM + to_integer(signed(first(11 downto 3))) and C_INDENT + SURFER_DIM > OBJECT_DIM + to_integer(signed(first(11 downto 3)))))) then
+                object_coll <= '1';
+            else
+                object_coll <= '0';
+            end if;
+        end if;
+    end process;
+    
+miss_process :  process(first, size) is
+    begin
+        if(size = 0) then
+            object_exit <= '0';
+        else
+            if(OBJECT_DIM + to_integer(unsigned(first(11 downto 3))) < 1) then --onda bi trebalo staviti da 
+                object_exit <= '1';                                            --da je horizontalna pozicija 
+            else                                                               --oznacen broj
+                object_exit <= '0';
+            end if;
+        end if;
+    end process;
+    
+    hit <= object_coll;
+    miss <= object_exit;
+    
+end architecture Behavioral;
